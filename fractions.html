@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Fraction Visualizer — VisMath</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-mist-900 dark:text-slate-100">
+
+  <header class="p-6">
+    <a href="index.html" class="text-blue-600 dark:text-blue-400 underline">&larr; Back</a>
+    <h1 class="text-3xl font-bold mt-2">Fraction Visualizer</h1>
+  </header>
+
+  <main class="p-6">
+    <div id="js-fraction-stage" class="border-4 border-white flex max-w-[50rem] h-[35rem] justify-center relative mx-auto ">
+      
+      <button id="js-fraction-add-button" class="rounded-lg bg-mist-700 hover:bg-mist-800 w-24 h-[2rem] absolute bottom-2 ">Add</button>
+    </div>
+  </main>
+
+  <!-- JS goes at the end of body, so the HTML above already exists when it runs. -->
+  <script src="js/fractions.js"></script>
+</body>
+</html>

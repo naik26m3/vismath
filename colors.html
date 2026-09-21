@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Color Reference — VisMath</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-mist-900 dark:text-slate-100">
+
+  <header class="p-6">
+    <a href="index.html" class="text-blue-600 dark:text-blue-400 underline">&larr; Back</a>
+    <h1 class="text-3xl font-bold mt-2">Color Reference</h1>
+    <p class="text-slate-600 dark:text-slate-400">
+      Every Tailwind background color. Click a swatch to copy its class name.
+      Swap <code class="font-mono">bg-</code> for <code class="font-mono">text-</code> or
+      <code class="font-mono">border-</code> to color text or borders instead.
+    </p>
+    <p id="copied" class="mt-2 h-5 text-sm font-mono text-green-600 dark:text-green-400"></p>
+  </header>
+
+  <main class="px-6 pb-12">
+
+    <section class="mb-8">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">keywords</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-black"
+        class="bg-black text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/20 hover:scale-105 transition">black</button>
+      <button type="button" data-class="bg-white"
+        class="bg-white text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/20 hover:scale-105 transition">white</button>
+      <button type="button" data-class="bg-transparent"
+        class="bg-transparent text-slate-900 dark:text-slate-100 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/20 hover:scale-105 transition">transparent</button>
+      <button type="button" data-class="bg-current"
+        class="bg-current text-transparent h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/20 hover:scale-105 transition">current</button>
+      <button type="button" data-class="bg-inherit"
+        class="bg-inherit text-slate-900 dark:text-slate-100 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/20 hover:scale-105 transition">inherit</button>
+      </div>
+    </section>
+
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">red</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-red-50"
+        class="bg-red-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-red-100"
+        class="bg-red-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-red-200"
+        class="bg-red-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-red-300"
+        class="bg-red-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-red-400"
+        class="bg-red-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-red-500"
+        class="bg-red-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-red-600"
+        class="bg-red-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-red-700"
+        class="bg-red-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-red-800"
+        class="bg-red-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-red-900"
+        class="bg-red-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-red-950"
+        class="bg-red-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">orange</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-orange-50"
+        class="bg-orange-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-orange-100"
+        class="bg-orange-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-orange-200"
+        class="bg-orange-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-orange-300"
+        class="bg-orange-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-orange-400"
+        class="bg-orange-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-orange-500"
+        class="bg-orange-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-orange-600"
+        class="bg-orange-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-orange-700"
+        class="bg-orange-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-orange-800"
+        class="bg-orange-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-orange-900"
+        class="bg-orange-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-orange-950"
+        class="bg-orange-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">amber</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-amber-50"
+        class="bg-amber-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-amber-100"
+        class="bg-amber-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-amber-200"
+        class="bg-amber-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-amber-300"
+        class="bg-amber-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-amber-400"
+        class="bg-amber-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-amber-500"
+        class="bg-amber-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-amber-600"
+        class="bg-amber-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-amber-700"
+        class="bg-amber-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-amber-800"
+        class="bg-amber-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-amber-900"
+        class="bg-amber-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-amber-950"
+        class="bg-amber-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">yellow</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-yellow-50"
+        class="bg-yellow-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-yellow-100"
+        class="bg-yellow-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-yellow-200"
+        class="bg-yellow-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-yellow-300"
+        class="bg-yellow-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-yellow-400"
+        class="bg-yellow-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-yellow-500"
+        class="bg-yellow-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-yellow-600"
+        class="bg-yellow-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-yellow-700"
+        class="bg-yellow-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-yellow-800"
+        class="bg-yellow-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-yellow-900"
+        class="bg-yellow-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-yellow-950"
+        class="bg-yellow-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">lime</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-lime-50"
+        class="bg-lime-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-lime-100"
+        class="bg-lime-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-lime-200"
+        class="bg-lime-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-lime-300"
+        class="bg-lime-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-lime-400"
+        class="bg-lime-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-lime-500"
+        class="bg-lime-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-lime-600"
+        class="bg-lime-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-lime-700"
+        class="bg-lime-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-lime-800"
+        class="bg-lime-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-lime-900"
+        class="bg-lime-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-lime-950"
+        class="bg-lime-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">green</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-green-50"
+        class="bg-green-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-green-100"
+        class="bg-green-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-green-200"
+        class="bg-green-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-green-300"
+        class="bg-green-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-green-400"
+        class="bg-green-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-green-500"
+        class="bg-green-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-green-600"
+        class="bg-green-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-green-700"
+        class="bg-green-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-green-800"
+        class="bg-green-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-green-900"
+        class="bg-green-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-green-950"
+        class="bg-green-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">emerald</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-emerald-50"
+        class="bg-emerald-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-emerald-100"
+        class="bg-emerald-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-emerald-200"
+        class="bg-emerald-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-emerald-300"
+        class="bg-emerald-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-emerald-400"
+        class="bg-emerald-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-emerald-500"
+        class="bg-emerald-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-emerald-600"
+        class="bg-emerald-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-emerald-700"
+        class="bg-emerald-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-emerald-800"
+        class="bg-emerald-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-emerald-900"
+        class="bg-emerald-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-emerald-950"
+        class="bg-emerald-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">teal</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-teal-50"
+        class="bg-teal-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-teal-100"
+        class="bg-teal-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-teal-200"
+        class="bg-teal-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-teal-300"
+        class="bg-teal-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-teal-400"
+        class="bg-teal-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-teal-500"
+        class="bg-teal-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-teal-600"
+        class="bg-teal-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-teal-700"
+        class="bg-teal-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-teal-800"
+        class="bg-teal-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-teal-900"
+        class="bg-teal-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-teal-950"
+        class="bg-teal-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">cyan</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-cyan-50"
+        class="bg-cyan-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-cyan-100"
+        class="bg-cyan-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-cyan-200"
+        class="bg-cyan-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-cyan-300"
+        class="bg-cyan-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-cyan-400"
+        class="bg-cyan-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-cyan-500"
+        class="bg-cyan-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-cyan-600"
+        class="bg-cyan-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-cyan-700"
+        class="bg-cyan-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-cyan-800"
+        class="bg-cyan-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-cyan-900"
+        class="bg-cyan-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-cyan-950"
+        class="bg-cyan-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">sky</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-sky-50"
+        class="bg-sky-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-sky-100"
+        class="bg-sky-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-sky-200"
+        class="bg-sky-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-sky-300"
+        class="bg-sky-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-sky-400"
+        class="bg-sky-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-sky-500"
+        class="bg-sky-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-sky-600"
+        class="bg-sky-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-sky-700"
+        class="bg-sky-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-sky-800"
+        class="bg-sky-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-sky-900"
+        class="bg-sky-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-sky-950"
+        class="bg-sky-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">blue</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-blue-50"
+        class="bg-blue-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-blue-100"
+        class="bg-blue-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-blue-200"
+        class="bg-blue-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-blue-300"
+        class="bg-blue-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-blue-400"
+        class="bg-blue-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-blue-500"
+        class="bg-blue-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-blue-600"
+        class="bg-blue-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-blue-700"
+        class="bg-blue-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-blue-800"
+        class="bg-blue-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-blue-900"
+        class="bg-blue-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-blue-950"
+        class="bg-blue-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">indigo</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-indigo-50"
+        class="bg-indigo-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-indigo-100"
+        class="bg-indigo-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-indigo-200"
+        class="bg-indigo-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-indigo-300"
+        class="bg-indigo-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-indigo-400"
+        class="bg-indigo-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-indigo-500"
+        class="bg-indigo-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-indigo-600"
+        class="bg-indigo-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-indigo-700"
+        class="bg-indigo-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-indigo-800"
+        class="bg-indigo-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-indigo-900"
+        class="bg-indigo-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-indigo-950"
+        class="bg-indigo-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">violet</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-violet-50"
+        class="bg-violet-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-violet-100"
+        class="bg-violet-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-violet-200"
+        class="bg-violet-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-violet-300"
+        class="bg-violet-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-violet-400"
+        class="bg-violet-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-violet-500"
+        class="bg-violet-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-violet-600"
+        class="bg-violet-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-violet-700"
+        class="bg-violet-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-violet-800"
+        class="bg-violet-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-violet-900"
+        class="bg-violet-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-violet-950"
+        class="bg-violet-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">purple</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-purple-50"
+        class="bg-purple-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-purple-100"
+        class="bg-purple-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-purple-200"
+        class="bg-purple-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-purple-300"
+        class="bg-purple-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-purple-400"
+        class="bg-purple-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-purple-500"
+        class="bg-purple-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-purple-600"
+        class="bg-purple-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-purple-700"
+        class="bg-purple-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-purple-800"
+        class="bg-purple-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-purple-900"
+        class="bg-purple-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-purple-950"
+        class="bg-purple-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">fuchsia</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-fuchsia-50"
+        class="bg-fuchsia-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-fuchsia-100"
+        class="bg-fuchsia-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-fuchsia-200"
+        class="bg-fuchsia-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-fuchsia-300"
+        class="bg-fuchsia-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-fuchsia-400"
+        class="bg-fuchsia-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-fuchsia-500"
+        class="bg-fuchsia-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-fuchsia-600"
+        class="bg-fuchsia-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-fuchsia-700"
+        class="bg-fuchsia-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-fuchsia-800"
+        class="bg-fuchsia-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-fuchsia-900"
+        class="bg-fuchsia-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-fuchsia-950"
+        class="bg-fuchsia-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">pink</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-pink-50"
+        class="bg-pink-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-pink-100"
+        class="bg-pink-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-pink-200"
+        class="bg-pink-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-pink-300"
+        class="bg-pink-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-pink-400"
+        class="bg-pink-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-pink-500"
+        class="bg-pink-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-pink-600"
+        class="bg-pink-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-pink-700"
+        class="bg-pink-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-pink-800"
+        class="bg-pink-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-pink-900"
+        class="bg-pink-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-pink-950"
+        class="bg-pink-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">rose</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-rose-50"
+        class="bg-rose-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-rose-100"
+        class="bg-rose-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-rose-200"
+        class="bg-rose-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-rose-300"
+        class="bg-rose-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-rose-400"
+        class="bg-rose-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-rose-500"
+        class="bg-rose-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-rose-600"
+        class="bg-rose-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-rose-700"
+        class="bg-rose-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-rose-800"
+        class="bg-rose-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-rose-900"
+        class="bg-rose-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-rose-950"
+        class="bg-rose-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">slate</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-slate-50"
+        class="bg-slate-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-slate-100"
+        class="bg-slate-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-slate-200"
+        class="bg-slate-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-slate-300"
+        class="bg-slate-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-slate-400"
+        class="bg-slate-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-slate-500"
+        class="bg-slate-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-slate-600"
+        class="bg-slate-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-slate-700"
+        class="bg-slate-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-slate-800"
+        class="bg-slate-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-slate-900"
+        class="bg-slate-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-slate-950"
+        class="bg-slate-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">gray</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-gray-50"
+        class="bg-gray-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-gray-100"
+        class="bg-gray-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-gray-200"
+        class="bg-gray-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-gray-300"
+        class="bg-gray-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-gray-400"
+        class="bg-gray-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-gray-500"
+        class="bg-gray-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-gray-600"
+        class="bg-gray-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-gray-700"
+        class="bg-gray-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-gray-800"
+        class="bg-gray-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-gray-900"
+        class="bg-gray-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-gray-950"
+        class="bg-gray-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">zinc</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-zinc-50"
+        class="bg-zinc-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-zinc-100"
+        class="bg-zinc-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-zinc-200"
+        class="bg-zinc-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-zinc-300"
+        class="bg-zinc-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-zinc-400"
+        class="bg-zinc-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-zinc-500"
+        class="bg-zinc-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-zinc-600"
+        class="bg-zinc-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-zinc-700"
+        class="bg-zinc-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-zinc-800"
+        class="bg-zinc-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-zinc-900"
+        class="bg-zinc-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-zinc-950"
+        class="bg-zinc-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">neutral</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-neutral-50"
+        class="bg-neutral-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-neutral-100"
+        class="bg-neutral-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-neutral-200"
+        class="bg-neutral-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-neutral-300"
+        class="bg-neutral-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-neutral-400"
+        class="bg-neutral-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-neutral-500"
+        class="bg-neutral-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-neutral-600"
+        class="bg-neutral-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-neutral-700"
+        class="bg-neutral-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-neutral-800"
+        class="bg-neutral-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-neutral-900"
+        class="bg-neutral-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-neutral-950"
+        class="bg-neutral-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">stone</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-stone-50"
+        class="bg-stone-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-stone-100"
+        class="bg-stone-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-stone-200"
+        class="bg-stone-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-stone-300"
+        class="bg-stone-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-stone-400"
+        class="bg-stone-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-stone-500"
+        class="bg-stone-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-stone-600"
+        class="bg-stone-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-stone-700"
+        class="bg-stone-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-stone-800"
+        class="bg-stone-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-stone-900"
+        class="bg-stone-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-stone-950"
+        class="bg-stone-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">mauve</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-mauve-50"
+        class="bg-mauve-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-mauve-100"
+        class="bg-mauve-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-mauve-200"
+        class="bg-mauve-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-mauve-300"
+        class="bg-mauve-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-mauve-400"
+        class="bg-mauve-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-mauve-500"
+        class="bg-mauve-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-mauve-600"
+        class="bg-mauve-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-mauve-700"
+        class="bg-mauve-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-mauve-800"
+        class="bg-mauve-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-mauve-900"
+        class="bg-mauve-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-mauve-950"
+        class="bg-mauve-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">olive</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-olive-50"
+        class="bg-olive-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-olive-100"
+        class="bg-olive-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-olive-200"
+        class="bg-olive-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-olive-300"
+        class="bg-olive-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-olive-400"
+        class="bg-olive-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-olive-500"
+        class="bg-olive-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-olive-600"
+        class="bg-olive-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-olive-700"
+        class="bg-olive-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-olive-800"
+        class="bg-olive-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-olive-900"
+        class="bg-olive-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-olive-950"
+        class="bg-olive-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">mist</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-mist-50"
+        class="bg-mist-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-mist-100"
+        class="bg-mist-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-mist-200"
+        class="bg-mist-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-mist-300"
+        class="bg-mist-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-mist-400"
+        class="bg-mist-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-mist-500"
+        class="bg-mist-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-mist-600"
+        class="bg-mist-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-mist-700"
+        class="bg-mist-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-mist-800"
+        class="bg-mist-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-mist-900"
+        class="bg-mist-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-mist-950"
+        class="bg-mist-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-sm font-semibold mb-1.5 font-mono">taupe</h2>
+      <div class="grid grid-cols-11 gap-1.5">
+      <button type="button" data-class="bg-taupe-50"
+        class="bg-taupe-50 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">50</button>
+      <button type="button" data-class="bg-taupe-100"
+        class="bg-taupe-100 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">100</button>
+      <button type="button" data-class="bg-taupe-200"
+        class="bg-taupe-200 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">200</button>
+      <button type="button" data-class="bg-taupe-300"
+        class="bg-taupe-300 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">300</button>
+      <button type="button" data-class="bg-taupe-400"
+        class="bg-taupe-400 text-slate-900 h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">400</button>
+      <button type="button" data-class="bg-taupe-500"
+        class="bg-taupe-500 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">500</button>
+      <button type="button" data-class="bg-taupe-600"
+        class="bg-taupe-600 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">600</button>
+      <button type="button" data-class="bg-taupe-700"
+        class="bg-taupe-700 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">700</button>
+      <button type="button" data-class="bg-taupe-800"
+        class="bg-taupe-800 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">800</button>
+      <button type="button" data-class="bg-taupe-900"
+        class="bg-taupe-900 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">900</button>
+      <button type="button" data-class="bg-taupe-950"
+        class="bg-taupe-950 text-white h-16 rounded flex items-end justify-start p-1.5 text-[10px] font-medium cursor-pointer border border-black/10 hover:scale-105 transition">950</button>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Click any swatch to copy its class name to the clipboard.
+    const note = document.getElementById("copied");
+    document.querySelectorAll("button[data-class]").forEach(function (swatch) {
+      swatch.addEventListener("click", function () {
+        const name = swatch.dataset.class;
+        navigator.clipboard.writeText(name);
+        note.textContent = "copied: " + name;
+      });
+    });
+  </script>
+</body>
+</html>

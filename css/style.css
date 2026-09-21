@@ -1,0 +1,7 @@
+/* Custom styles that Tailwind doesn't cover.
+   Keep this small — reach for Tailwind classes first. */
+
+/* Makes tapping on a tablet feel less laggy. */
+button {
+  touch-action: manipulation;
+}
