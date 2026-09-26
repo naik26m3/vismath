@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Bubbling Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="p-6 font-sans">
+
+  <h1 class="text-2xl font-bold mb-2">Bubbling + the two stop methods</h1>
+  <p class="mb-6 text-sm opacity-70">Click the small red box. Watch the log.</p>
+
+  <div class="flex gap-8 flex-wrap">
+
+    <!-- the nested boxes -->
+    <div>
+      <div id="outer" class="p-8 border-4 border-blue-500 rounded">
+        <p class="text-xs mb-2">OUTER (like your stage)</p>
+
+        <div id="middle" class="p-8 border-4 border-green-500 rounded">
+          <p class="text-xs mb-2">MIDDLE (like your bar)</p>
+
+          <div id="inner" class="p-6 border-4 border-red-500 rounded cursor-pointer">
+            <p class="text-xs">INNER (like your X)</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- controls + log -->
+    <div class="flex-1 min-w-[18rem]">
+
+      <p class="font-bold mb-2">INNER's first listener will:</p>
+
+      <label class="block mb-1">
+        <input type="radio" name="mode" value="none" checked>
+        nothing
+      </label>
+      <label class="block mb-1">
+        <input type="radio" name="mode" value="stop">
+        e.stopPropagation()
+      </label>
+      <label class="block mb-4">
+        <input type="radio" name="mode" value="immediate">
+        e.stopImmediatePropagation()
+      </label>
+
+      <button id="clear" class="mb-3 px-3 py-1 border rounded text-sm">clear log</button>
+
+      <pre id="log" class="border rounded p-3 h-64 overflow-auto text-sm"></pre>
+    </div>
+
+  </div>
+
+  <script>
+    const log = document.querySelector('#log');
+
+    function write(text) {
+      log.textContent += text + "\n";
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function chosenMode() {
+      return document.querySelector('input[name="mode"]:checked').value;
+    }
+
+    // INNER has TWO listeners. Order matters: this one was added first.
+    document.querySelector('#inner').addEventListener('click', (e) => {
+      write("INNER  listener 1");
+
+      const mode = chosenMode();
+      if (mode === "stop") {
+        e.stopPropagation();
+        write("       -> stopPropagation()");
+      }
+      if (mode === "immediate") {
+        e.stopImmediatePropagation();
+        write("       -> stopImmediatePropagation()");
+      }
+    });
+
+    // added second, so it runs second
+    document.querySelector('#inner').addEventListener('click', () => {
+      write("INNER  listener 2");
+    });
+
+    document.querySelector('#middle').addEventListener('click', () => {
+      write("MIDDLE listener");
+    });
+
+    document.querySelector('#outer').addEventListener('click', () => {
+      write("OUTER  listener");
+      write("---");
+    });
+
+    document.querySelector('#clear').addEventListener('click', (e) => {
+      e.stopPropagation();       // so clearing does not log anything itself
+      log.textContent = "";
+    });
+  </script>
+
+</body>
+
+</html>

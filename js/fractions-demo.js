@@ -2,8 +2,15 @@ const stage    = document.getElementById("stage");
 const addBtn   = document.getElementById("add-btn");
 const clearBtn = document.getElementById("clear-btn");
 
-let dropCount = 0;   // used to stagger where new bars appear
+let dropCount = 0;   // how many bars have EVER been made. only goes up.
 let topLayer  = 1;   // rises every grab, so the dragged bar sits on top
+
+// Where new bars land. dropCount wraps around these slots with %,
+// so bar 6 goes back to slot 0 instead of falling off the bottom.
+const SLOT_COUNT   = 5;
+const SLOT_HEIGHT  = 70;   // px from one slot to the next
+const SLOT_INDENT  = 18;   // px each slot is nudged right, so they fan out
+const SLOT_ORIGIN  = 16;   // px padding from the stage's top-left corner
 
 
 // ---------------------------------------------------------------
@@ -61,10 +68,16 @@ function addBar(numerator, denominator) {
   group.className = "absolute cursor-grab touch-none select-none";
 
   // Stagger each new bar so they don't land on top of each other.
-  group.style.left = (16 + (dropCount % 5) * 18) + "px";
-  group.style.top  = (16 + (dropCount % 5) * 70) + "px";
+  // % wraps the slot back to 0 once we run past the last one:
+  //   dropCount 0,1,2,3,4, 5,6,7,8,9, 10...
+  //   slot      0,1,2,3,4, 0,1,2,3,4,  0...
+  const slot = dropCount % SLOT_COUNT;
+
+  group.style.left = (SLOT_ORIGIN + slot * SLOT_INDENT) + "px";
+  group.style.top  = (SLOT_ORIGIN + slot * SLOT_HEIGHT) + "px";
   group.style.zIndex = ++topLayer;
-  dropCount++;
+
+  dropCount++;   // never goes down, not even when a bar is deleted
 
   const label = document.createElement("p");
   label.className = "text-xs font-mono mb-1 text-slate-600 dark:text-slate-400";
@@ -95,8 +108,8 @@ function addBar(numerator, denominator) {
 
 
 addBtn.addEventListener("click", function () {
-  const denominator = Number(prompt("How many parts? (denominator)"));
-  const numerator   = Number(prompt("How many are shaded? (numerator)"));
+  const denominator = 5;
+  const numerator   = 4;
 
   if (!Number.isInteger(denominator) || denominator < 1 || denominator > 20) {
     alert("Denominator must be a whole number from 1 to 20.");
