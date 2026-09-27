@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Shade Labels</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    /* Stops a finger tap from also scrolling the page. */
+    .piece { touch-action: manipulation; }
+  </style>
+</head>
+
+<body class="p-6 bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+
+  <h1 class="text-2xl font-bold">What should a shaded piece say?</h1>
+  <p class="mt-1 mb-6 text-sm opacity-70">
+    Tap the squares. All four bars share the same state, so you can compare them directly.
+  </p>
+
+  <div class="flex items-center gap-3 mb-8">
+    <label for="den" class="text-sm">Denominator</label>
+    <input id="den" type="number" value="4" min="1" max="12"
+      class="w-20 rounded border px-2 py-1 bg-transparent">
+    <button id="reset" class="rounded border px-3 py-1 text-sm">Clear shading</button>
+  </div>
+
+  <div id="options" class="flex flex-col gap-10 max-w-2xl"></div>
+
+  <script>
+    const MODES = [
+      {
+        id: "every",
+        title: "A — every piece says 1/n",
+        note: "What you have now. The unit is always visible, so a kid can count it. But the answer (2/4) is never written down — they have to hold it in their head.",
+      },
+      {
+        id: "total",
+        title: "B — pieces blank, total above",
+        note: "The answer is stated plainly. But the unit disappears, so 'four pieces means quarters' is something you have to say out loud every time.",
+      },
+      {
+        id: "shadedOnly",
+        title: "C — only shaded pieces are labelled",
+        note: "The labels ARE the answer: you read 1/4 + 1/4 across the bar. Good for teaching that 2/4 is two quarters, not a new thing. Gets noisy at large denominators.",
+      },
+      {
+        id: "both",
+        title: "E — B + C: shaded pieces labelled, total above",
+        note: "The unit and the answer at the same time. A kid can count 1/4 + 1/4 across the bar and see it add up to the number on top — so the total is something they arrive at, not something they are told.",
+      },
+      {
+        id: "allPlusTotal",
+        title: "F — A + B: every piece labelled, total above",
+        note: "Like E, but the empty pieces keep a faded 1/4 too. The kid can see what is still there to take — 'you have 2/4, there are two more quarters left' — instead of the remainder being blank.",
+      },
+      {
+        id: "merged",
+        title: "D — shaded run merges into one label",
+        note: "Shows the result as a single quantity. Strongest for 'of 20' work later, since one region can carry one number. But it hides the count, and it breaks up if the shading is not side by side — tap 1 and 3 to see.",
+      },
+    ];
+
+    const options   = document.getElementById("options");
+    const denInput  = document.getElementById("den");
+    const resetBtn  = document.getElementById("reset");
+
+    let denominator = 4;
+    let shaded = new Array(denominator).fill(false);
+
+    // ---- helpers -------------------------------------------------
+
+    // Which contiguous run of shaded pieces does each index belong to?
+    // Used only by mode D.
+    function runInfo() {
+      const info = new Array(denominator).fill(null);
+      let i = 0;
+      while (i < denominator) {
+        if (!shaded[i]) { i++; continue; }
+        let j = i;
+        while (j < denominator && shaded[j]) j++;
+        const length = j - i;
+        const middle = i + Math.floor((length - 1) / 2);
+        for (let k = i; k < j; k++) {
+          info[k] = { length, middle, last: j - 1 };
+        }
+        i = j;
+      }
+      return info;
+    }
+
+    function shadedCount() {
+      return shaded.filter(Boolean).length;
+    }
+
+    // ---- one bar -------------------------------------------------
+
+    function buildBar(mode) {
+      const bar = document.createElement("div");
+      bar.className = "flex w-full h-16 border-2 border-slate-700 dark:border-slate-300 rounded overflow-hidden";
+
+      const runs = runInfo();
+
+      for (let i = 0; i < denominator; i++) {
+        const piece = document.createElement("div");
+        const on = shaded[i];
+
+        let cls = "piece flex-1 flex items-center justify-center cursor-pointer select-none text-sm ";
+        cls += on ? "bg-amber-300 text-slate-900 " : "text-slate-500 ";
+
+        // Divider between pieces. Mode D drops it inside a shaded run,
+        // so the run reads as one block instead of separate squares.
+        const insideRun = mode.id === "merged" && on && runs[i] && i !== runs[i].last;
+        if (i < denominator - 1 && !insideRun) {
+          cls += "border-r border-slate-700 dark:border-slate-500 ";
+        }
+
+        piece.className = cls;
+
+        if (mode.id === "every") {
+          piece.textContent = "1/" + denominator;
+        } else if (mode.id === "allPlusTotal") {
+          piece.textContent = "1/" + denominator;
+          if (!on) piece.classList.add("opacity-50");   // faded, but still readable
+        } else if (mode.id === "total") {
+          piece.textContent = "";
+        } else if (mode.id === "shadedOnly" || mode.id === "both") {
+          piece.textContent = on ? "1/" + denominator : "";
+        } else if (mode.id === "merged") {
+          const run = runs[i];
+          piece.textContent = (run && i === run.middle)
+            ? run.length + "/" + denominator
+            : "";
+          if (run && i === run.middle) piece.classList.add("font-bold", "text-lg");
+        }
+
+        piece.addEventListener("click", () => {
+          shaded[i] = !shaded[i];
+          render();
+        });
+
+        bar.appendChild(piece);
+      }
+
+      return bar;
+    }
+
+    // ---- page ----------------------------------------------------
+
+    function render() {
+      options.innerHTML = "";
+
+      for (const mode of MODES) {
+        const block = document.createElement("div");
+
+        const title = document.createElement("h2");
+        title.className = "font-bold mb-2";
+        title.textContent = mode.title;
+        block.appendChild(title);
+
+        // Modes B, E and F put the answer above the bar as well.
+        if (mode.id === "total" || mode.id === "both" || mode.id === "allPlusTotal") {
+          const total = document.createElement("p");
+          total.className = "text-2xl font-bold mb-1";
+          total.textContent = shadedCount() + "/" + denominator;
+          block.appendChild(total);
+        }
+
+        block.appendChild(buildBar(mode));
+
+        const note = document.createElement("p");
+        note.className = "mt-2 text-sm opacity-70";
+        note.textContent = mode.note;
+        block.appendChild(note);
+
+        options.appendChild(block);
+      }
+    }
+
+    denInput.addEventListener("input", () => {
+      const value = Number(denInput.value);
+      if (!Number.isInteger(value) || value < 1 || value > 12) return;
+      denominator = value;
+      shaded = new Array(denominator).fill(false);
+      render();
+    });
+
+    resetBtn.addEventListener("click", () => {
+      shaded = new Array(denominator).fill(false);
+      render();
+    });
+
+    render();
+  </script>
+
+</body>
+
+</html>

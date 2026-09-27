@@ -26,7 +26,42 @@ Newest ideas go at the bottom of "Someday". Move things up as they get real.
 
 ---
 
+## The plan (what "done" looks like for this tool)
+
+Written 2026-09-26. This is the real goal — the stuff below is in service of it.
+
+- [ ] **Tap a piece to shade it.** Make a `0/3` bar, tap a square → `1/3`, tap another → `2/3`.
+      Lets a kid build the fraction themselves instead of being shown it.
+
+      *New technique needed:* telling a tap from a drag. Both start with `pointerdown` on the
+      same element. Standard fix: record the pointer position on down, and on up check how far
+      it moved — under ~5px means it was a tap, not a drag. The down position is already stored
+      (`howFarX`), so most of it exists.
+
+- [ ] **"3/4 of 20 = ?"** — the thing actually asked at the centre.
+      Flow: make a `0/4` bar → "the whole bar is 20, so how much is each part?" → the bar shows
+      `5` in each piece → kid taps 3 pieces → answer is 15.
+
+      Split into two, because they are very different sizes:
+      - [ ] *Give a bar a whole-value.* Each piece shows `wholeValue / denominator` next to the
+            fraction. This is easy — the piece loop already exists, it just prints another number.
+      - [ ] *Drag a number onto a bar to set it.* Moderate. Needs "what element is under my finger
+            when I let go" → `document.elementFromPoint(x, y)`, then walk up to find the bar.
+            Worth asking whether this earns its complexity: the teaching moment is "the whole is
+            20, so each part is 5" — a typed field gets 90% of the value. Build the drag version
+            only if it actually helps in the room.
+
+---
+
 ## Now
+
+- [x] **Decided how shaded pieces are labelled** — option **F** in `demos/shade-labels.html`:
+      every piece keeps its `1/n` label, empty ones faded (`opacity-50`), and the running
+      total (`2/4`) sits above the bar.
+      *Why:* the kid counts `1/4 + 1/4` across the bar and sees it match the number on top,
+      so the total is arrived at rather than announced. Keeping the faded labels means the
+      remainder is visible as quarters — "there are two more left" — which is what the
+      `3/4 of 20` work needs. Watch it at denominator 12; it gets busy.
 
 - [ ] **Improper fractions** (e.g. `9/8`). Decide what it should LOOK like first — this is a
       teaching decision, not a code one. Options:

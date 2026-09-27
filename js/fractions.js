@@ -4,10 +4,11 @@ const stage = document.querySelector('#js-fraction-stage');
 const input = document.querySelector('#js-fraction-input');
 const form = document.querySelector('#js-fraction-form');
 let barCounter = 0;
+let isSelected = false;
 
 function addBar(numerator, denominator) {
     const bar = document.createElement('div');
-    bar.className = "flex w-60 h-14 border-2 absolute touch-none";
+    bar.className = "flex w-60 h-14 border-2 absolute touch-none bg-mist-900";
 
     bar.style.top = `${20 + (14 * 4 + BAR_SPACING) * barCounter}px`;
     bar.style.left = "20px";
@@ -21,8 +22,9 @@ function addBar(numerator, denominator) {
     for (let i = 0; i < denominator; i++) {
         if (i < numerator) {
             pieces += `<div class="border flex-1 flex items-center justify-center bg-amber-300">1/${denominator}</div>`;
+            console.log("test");
         } else {
-            pieces += `<div class="border flex-1 flex items-center justify-center dark:bg-mist-900">1/${denominator}</div>`;
+            pieces += `<div class="border flex-1 flex items-center justify-center opacity-50">1/${denominator}</div>`;
         }
     }
     bar.innerHTML = pieces;
@@ -31,6 +33,7 @@ function addBar(numerator, denominator) {
     barCounter++;
 
     delButton.addEventListener("pointerdown", (e) => {
+        
         e.stopPropagation();
     });
 
@@ -44,13 +47,17 @@ function addBar(numerator, denominator) {
     let howFarX = 0;
     let howFarY = 0;
 
+    let coords = {};
+    let shadedPart;
     bar.addEventListener("pointerdown", (e) => {
         isDragging = true;
         const barCoords = bar.getBoundingClientRect();
         howFarX = e.clientX - barCoords.x;
         howFarY = e.clientY - barCoords.y;
+        coords.x = barCoords.x;
+        coords.y = barCoords.y;
         bar.setPointerCapture(e.pointerId);
-        // console.log(bar.getBoundingClientRect().x, bar.getBoundingClientRect().y);
+        shadedPart = e.target;
     })
 
     bar.addEventListener("pointermove", (e) => {
@@ -60,12 +67,19 @@ function addBar(numerator, denominator) {
             bar.style.left = `${e.clientX - stageCoords.x - howFarX + stage.scrollLeft}px`;
             // console.log(e.clientX, e.clientY); 
         } 
-        
     })
 
     bar.addEventListener("pointerup", () => {
+        const barNow = bar.getBoundingClientRect();
+        if (Math.abs(coords.x - barNow.x) <= 5 && Math.abs(coords.y - barNow.y) <= 5) {
+            shadedPart.classList.toggle("bg-amber-300")
+            shadedPart.classList.toggle("opacity-50");
+        }
+        // console.log(barNow);    
         isDragging = false;
     })
+
+    
 }
 
 document.querySelector('#js-fraction-add-button').addEventListener('click', () => {
