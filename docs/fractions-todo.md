@@ -95,6 +95,8 @@ Written 2026-09-26. This is the real goal — the stuff below is in service of i
 
 ## Known rough edges
 
+- [ ] Text inside the stage can be highlighted while dragging — a long press on a tablet selects
+      `1/4` and pops up the copy menu. Fix: `select-none` (`user-select: none`) on bars and chips.
 - [ ] Bars can be dragged outside the stage entirely and get lost (demo clamps with `Math.max`/`Math.min`)
 - [ ] Delete button may be clipped by `overflow-scroll` when a bar sits at the very top
 - [ ] `overflow-scroll` vs `overflow-hidden` — not decided. Scrolling and dragging compete for the same finger.
