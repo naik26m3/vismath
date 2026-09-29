@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>Total Label</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="p-6 bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+
+  <h1 class="text-2xl font-bold">Where does the total go?</h1>
+  <p class="mt-1 mb-6 text-sm opacity-70">
+    Tap pieces to shade. Drag the bars around. The point is what happens when you drag.
+  </p>
+
+  <div id="stage"
+    class="relative w-full max-w-3xl h-[30rem] border-2 border-slate-400 rounded overflow-hidden">
+  </div>
+
+  <div id="notes" class="mt-6 max-w-3xl flex flex-col gap-4 text-sm"></div>
+
+  <script>
+    const stage = document.getElementById("stage");
+    const notes = document.getElementById("notes");
+
+    const OPTIONS = [
+      {
+        id: "above",
+        title: "A — label absolute, above the bar",
+        note: "The label is a child of the bar, positioned above it with -top. Same trick as the X button. The bar stays the draggable thing, so none of your drag code changes. The label can be clipped if the bar sits at the very top of the stage.",
+      },
+      {
+        id: "left",
+        title: "B — label absolute, to the left",
+        note: "Same idea, different corner. Never overlaps the bar above it, which matters once several bars are stacked close together. But it eats horizontal room, and it is clipped at the left edge.",
+      },
+      {
+        id: "group",
+        title: "C — wrapper holds label + bar",
+        note: "A normal flex column: label on top, bar below, wrapper is what you drag. Nothing is clipped and nothing overlaps. Costs you a rewrite: the wrapper becomes the drag target, so every place your code says 'bar' for dragging has to mean the wrapper instead.",
+      },
+    ];
+
+    let topLayer = 1;
+
+    function makeBar(option, top) {
+      const denominator = 4;
+
+      // C needs an extra element around everything. A and B do not.
+      const root = document.createElement("div");
+      const bar = document.createElement("div");
+
+      if (option.id === "group") {
+        root.className = "absolute touch-none select-none";
+        bar.className = "flex w-60 h-14 border-2 border-slate-700 dark:border-slate-300 bg-white dark:bg-slate-800";
+      } else {
+        root.className = "absolute touch-none select-none flex w-60 h-14 border-2 border-slate-700 dark:border-slate-300 bg-white dark:bg-slate-800";
+      }
+
+      root.style.top = top + "px";
+      root.style.left = "24px";
+
+      const label = document.createElement("p");
+      label.className = "font-bold text-lg whitespace-nowrap";
+
+      if (option.id === "above") {
+        label.className += " absolute -top-7 left-0";
+      } else if (option.id === "left") {
+        label.className += " absolute top-2 -left-14 text-right w-12";
+      }
+
+      // The element the pieces actually go into.
+      const holder = option.id === "group" ? bar : root;
+
+      for (let i = 0; i < denominator; i++) {
+        const piece = document.createElement("div");
+        piece.className = "flex-1 flex items-center justify-center border-r border-slate-700 dark:border-slate-400 text-sm opacity-50";
+        piece.textContent = "1/" + denominator;
+        holder.appendChild(piece);
+      }
+
+      function retotal() {
+        const shaded = holder.querySelectorAll(".bg-amber-300").length;
+        label.textContent = shaded + "/" + denominator;
+      }
+
+      if (option.id === "group") {
+        root.appendChild(label);
+        root.appendChild(bar);
+      } else {
+        root.appendChild(label);
+      }
+
+      retotal();
+      stage.appendChild(root);
+      makeDraggable(root, holder, retotal);
+      return root;
+    }
+
+    function makeDraggable(root, holder, retotal) {
+      let grabX = 0, grabY = 0;
+      let startX = 0, startY = 0;
+      let tapped = null;
+
+      root.addEventListener("pointerdown", (e) => {
+        const box = root.getBoundingClientRect();
+        grabX = e.clientX - box.left;
+        grabY = e.clientY - box.top;
+        startX = box.left;
+        startY = box.top;
+        tapped = e.target;
+        root.setPointerCapture(e.pointerId);
+        root.style.zIndex = ++topLayer;
+      });
+
+      root.addEventListener("pointermove", (e) => {
+        if (!root.hasPointerCapture(e.pointerId)) return;
+        const area = stage.getBoundingClientRect();
+        root.style.left = (e.clientX - area.left - grabX) + "px";
+        root.style.top = (e.clientY - area.top - grabY) + "px";
+      });
+
+      root.addEventListener("pointerup", () => {
+        const box = root.getBoundingClientRect();
+        const moved = Math.abs(box.left - startX) > 5 || Math.abs(box.top - startY) > 5;
+
+        if (!moved && tapped && tapped.parentElement === holder) {
+          tapped.classList.toggle("bg-amber-300");
+          tapped.classList.toggle("text-slate-900");
+          tapped.classList.toggle("opacity-50");
+          retotal();
+        }
+        tapped = null;
+      });
+    }
+
+    OPTIONS.forEach((option, i) => {
+      makeBar(option, 40 + i * 110);
+
+      const note = document.createElement("p");
+      note.innerHTML = "<strong>" + option.title + "</strong><br>"
+        + "<span class='opacity-70'>" + option.note + "</span>";
+      notes.appendChild(note);
+    });
+  </script>
+
+</body>
+
+</html>

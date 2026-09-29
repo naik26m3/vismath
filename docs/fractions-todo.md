@@ -30,13 +30,10 @@ Newest ideas go at the bottom of "Someday". Move things up as they get real.
 
 Written 2026-09-26. This is the real goal — the stuff below is in service of it.
 
-- [ ] **Tap a piece to shade it.** Make a `0/3` bar, tap a square → `1/3`, tap another → `2/3`.
-      Lets a kid build the fraction themselves instead of being shown it.
-
-      *New technique needed:* telling a tap from a drag. Both start with `pointerdown` on the
-      same element. Standard fix: record the pointer position on down, and on up check how far
-      it moved — under ~5px means it was a tap, not a drag. The down position is already stored
-      (`howFarX`), so most of it exists.
+- [x] **Tap a piece to shade it.** Done. `pointerdown` records the piece (`e.target` is still
+      correct there — after `setPointerCapture` everything retargets to the bar), `pointerup`
+      shades it only if the bar moved less than 5px. Total above the bar recounts with
+      `bar.querySelectorAll('.bg-amber-300').length`.
 
 - [ ] **"3/4 of 20 = ?"** — the thing actually asked at the centre.
       Flow: make a `0/4` bar → "the whole bar is 20, so how much is each part?" → the bar shows

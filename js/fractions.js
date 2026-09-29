@@ -1,4 +1,4 @@
-const BAR_SPACING = 20;
+const BAR_SPACING = 30;
 
 const stage = document.querySelector('#js-fraction-stage');
 const input = document.querySelector('#js-fraction-input');
@@ -10,25 +10,30 @@ function addBar(numerator, denominator) {
     const bar = document.createElement('div');
     bar.className = "flex w-60 h-14 border-2 absolute touch-none bg-mist-900";
 
-    bar.style.top = `${20 + (14 * 4 + BAR_SPACING) * barCounter}px`;
+    bar.style.top = `${30 + (14 * 4 + BAR_SPACING) * barCounter}px`;
     bar.style.left = "20px";
 
     const delButton = document.createElement('button');
     delButton.className = "flex justify-center items-center absolute -top-3 -right-3 border-3 rounded-[100%] size-[1.5rem] bg-red-800";
     delButton.textContent = "X"; 
 
+    const currentCount = document.createElement('p');
+    currentCount.className = "absolute -top-7.5 -left-1 text-xl font-bold"
+    currentCount.textContent = `${numerator}/${denominator}`;
+
+
     let pieces = "";
     
     for (let i = 0; i < denominator; i++) {
         if (i < numerator) {
             pieces += `<div class="border flex-1 flex items-center justify-center bg-amber-300">1/${denominator}</div>`;
-            console.log("test");
         } else {
             pieces += `<div class="border flex-1 flex items-center justify-center opacity-50">1/${denominator}</div>`;
         }
     }
     bar.innerHTML = pieces;
     bar.appendChild(delButton);
+    bar.appendChild(currentCount);
     stage.appendChild(bar);
     barCounter++;
 
@@ -57,7 +62,11 @@ function addBar(numerator, denominator) {
         coords.x = barCoords.x;
         coords.y = barCoords.y;
         bar.setPointerCapture(e.pointerId);
-        shadedPart = e.target;
+        if (e.target.matches('.border')) {
+            shadedPart = e.target;
+        } else {
+            shadedPart = null;
+        }
     })
 
     bar.addEventListener("pointermove", (e) => {
@@ -71,9 +80,11 @@ function addBar(numerator, denominator) {
 
     bar.addEventListener("pointerup", () => {
         const barNow = bar.getBoundingClientRect();
-        if (Math.abs(coords.x - barNow.x) <= 5 && Math.abs(coords.y - barNow.y) <= 5) {
+
+        if (shadedPart && Math.abs(coords.x - barNow.x) <= 5 && Math.abs(coords.y - barNow.y) <= 5) {
             shadedPart.classList.toggle("bg-amber-300")
             shadedPart.classList.toggle("opacity-50");
+            currentCount.textContent = `${bar.querySelectorAll('.bg-amber-300').length}/${denominator}`;
         }
         // console.log(barNow);    
         isDragging = false;
