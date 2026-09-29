@@ -95,6 +95,13 @@ Written 2026-09-26. This is the real goal — the stuff below is in service of i
 
 ## Known rough edges
 
+- [ ] **Large denominators.** The bar is a fixed `w-60`, so at `1/20` each piece is ~12px wide
+      and the `1/20` label does not fit; at `1/100` it is ~2px. Max expected is 100.
+      Think about what a piece should show when there is no room — drop the label and keep the
+      total above? Shrink the text with a threshold? Widen the bar as the denominator grows
+      (but then bars are no longer comparable, which breaks the whole point)? Show tick marks
+      instead of boxes past some number?
+      Decide the UX first, like the shading labels — `demos/` is the place to try it.
 - [ ] Text inside the stage can be highlighted while dragging — a long press on a tablet selects
       `1/4` and pops up the copy menu. Fix: `select-none` (`user-select: none`) on bars and chips.
 - [ ] Bars can be dragged outside the stage entirely and get lost (demo clamps with `Math.max`/`Math.min`)
@@ -129,3 +136,17 @@ Core first. Come back to these.
 - [ ] Bring a bar to the front when you grab it
 - [ ] Duplicate a bar
 - [ ] Keep bars after a page refresh (`localStorage`)
+
+---
+
+## Next tool: percentages
+
+Decided 2026-09-29. A percentage bar is a fraction bar with denominator 100 and different
+labels, so most of this file already applies — dragging, tap to shade, the whole-value chip,
+the running total.
+
+Worth working out before starting:
+- How much of `js/fractions.js` is actually reusable vs copy-pasted? This is the first real
+  chance to see what belongs in a shared file.
+- 100 pieces is exactly the "large denominators" problem above. Solve that first and the
+  percentage bar mostly falls out of it.
