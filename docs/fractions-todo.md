@@ -35,18 +35,22 @@ Written 2026-09-26. This is the real goal — the stuff below is in service of i
       shades it only if the bar moved less than 5px. Total above the bar recounts with
       `bar.querySelectorAll('.bg-amber-300').length`.
 
-- [ ] **"3/4 of 20 = ?"** — the thing actually asked at the centre.
-      Flow: make a `0/4` bar → "the whole bar is 20, so how much is each part?" → the bar shows
-      `5` in each piece → kid taps 3 pieces → answer is 15.
+- [x] **"3/4 of 20 = ?"** — working end to end.
+      "Add Number" spawns a draggable chip. Drop it on a bar → the chip disappears, every piece
+      shows its share, and the label above reads `15 (3/4)`. The bar remembers its whole in
+      `bar.dataset.whole`, so tapping pieces afterwards recalculates correctly.
+      Drop detection: `document.elementFromPoint(x, y)` then `.closest('.js-bar')`.
 
-      Split into two, because they are very different sizes:
-      - [ ] *Give a bar a whole-value.* Each piece shows `wholeValue / denominator` next to the
-            fraction. This is easy — the piece loop already exists, it just prints another number.
-      - [ ] *Drag a number onto a bar to set it.* Moderate. Needs "what element is under my finger
-            when I let go" → `document.elementFromPoint(x, y)`, then walk up to find the bar.
-            Worth asking whether this earns its complexity: the teaching moment is "the whole is
-            20, so each part is 5" — a typed field gets 90% of the value. Build the drag version
-            only if it actually helps in the room.
+      Left over from it:
+      - [ ] Whole values that do not divide evenly show long decimals (`20/3` → `6.666…`).
+            Wanted: mixed numbers (`6 2/3`). Needs exact fraction math — keep numerator and
+            denominator, add them properly, reduce with a GCD. Do not use floats.
+      - [ ] The chip sits under your own finger, so `elementFromPoint` can return the chip
+            instead of the bar behind it. Fix: `chip.style.pointerEvents = 'none'` just around
+            the lookup.
+      - [ ] `addBar` and `addNumber` have near-identical drag code. A `makeDraggable(el)` was
+            started and abandoned — the blocker was passing a callback for "what a tap means".
+            Come back when callbacks click; it is a 10 minute job then.
 
 ---
 
