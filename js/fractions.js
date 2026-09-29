@@ -108,7 +108,7 @@ function addBar(numerator, denominator) {
 
 function addNumber(number) {
     const numberContainer = document.createElement('div');
-    numberContainer.className = "h-10 px-3 absolute flex items-center justify-center";
+    numberContainer.className = "h-10 px-3 absolute flex items-center justify-center touch-none";
 
     numberContainer.style.top = `${30 + (14 * 4 + BAR_SPACING) * numberCounter}px`;
     numberContainer.style.left = "20px";
