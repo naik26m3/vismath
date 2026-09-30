@@ -45,7 +45,7 @@ Written 2026-09-26. This is the real goal — the stuff below is in service of i
       - [ ] Whole values that do not divide evenly show long decimals (`20/3` → `6.666…`).
             Wanted: mixed numbers (`6 2/3`). Needs exact fraction math — keep numerator and
             denominator, add them properly, reduce with a GCD. Do not use floats.
-      - [ ] The chip sits under your own finger, so `elementFromPoint` can return the chip
+      - [x] DONE — The chip sat under your own finger, so `elementFromPoint` can return the chip
             instead of the bar behind it. Fix: `chip.style.pointerEvents = 'none'` just around
             the lookup.
       - [ ] `addBar` and `addNumber` have near-identical drag code. A `makeDraggable(el)` was
@@ -102,7 +102,7 @@ Written 2026-09-26. This is the real goal — the stuff below is in service of i
       (but then bars are no longer comparable, which breaks the whole point)? Show tick marks
       instead of boxes past some number?
       Decide the UX first, like the shading labels — `demos/` is the place to try it.
-- [ ] Text inside the stage can be highlighted while dragging — a long press on a tablet selects
+- [x] DONE — Text inside the stage can be highlighted while dragging — a long press on a tablet selects
       `1/4` and pops up the copy menu. Fix: `select-none` (`user-select: none`) on bars and chips.
 - [ ] Bars can be dragged outside the stage entirely and get lost (demo clamps with `Math.max`/`Math.min`)
 - [ ] Delete button may be clipped by `overflow-scroll` when a bar sits at the very top
@@ -129,10 +129,10 @@ Core first. Come back to these.
 
 ## Someday
 
-- [ ] Label each bar with the fraction it shows (`3/4` above or beside it)
+- [x] Label each bar with the fraction it shows (`3/4` above or beside it)
 - [ ] Only the selected bar shows its `✕` (the Canva-style selection idea)
 - [ ] Snap bars to align left edges, so comparing is exact
-- [ ] Click a piece to toggle it filled/empty
+- [x] Click a piece to toggle it filled/empty
 - [ ] Bring a bar to the front when you grab it
 - [ ] Duplicate a bar
 - [ ] Keep bars after a page refresh (`localStorage`)

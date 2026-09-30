@@ -162,9 +162,10 @@ function addNumber(number) {
 
     numberContainer.addEventListener("pointerup", (e) => {
         isDragging = false;
+        numberContainer.style.pointerEvents = 'none'; 
         const bar = document.elementFromPoint(e.clientX, e.clientY).closest('.js-bar')
+        numberContainer.style.pointerEvents = '';
 
-        // console.log(document.elementFromPoint(e.clientX, e.clientY));
         if (bar) {
             const pieces = bar.querySelectorAll('.js-part');
             const currentCount = bar.querySelector('.js-count');
