@@ -80,13 +80,13 @@ function addBar(numerator, denominator) {
   dropCount++;   // never goes down, not even when a bar is deleted
 
   const label = document.createElement("p");
-  label.className = "text-xs font-mono mb-1 text-slate-600 dark:text-slate-400";
+  label.className = "text-xs font-mono mb-1 text-slate-400";
   label.textContent = numerator + "/" + denominator;
 
   // Fixed width, so every bar represents the same "whole" and they
   // can be compared by sliding one under another.
   const bar = document.createElement("div");
-  bar.className = "flex w-80 h-14 border-2 border-slate-700 dark:border-slate-300 rounded overflow-hidden bg-white dark:bg-slate-700";
+  bar.className = "flex w-80 h-14 border-2 border-slate-300 rounded overflow-hidden bg-mist-800";
 
   for (let i = 0; i < denominator; i++) {
     const piece = document.createElement("div");

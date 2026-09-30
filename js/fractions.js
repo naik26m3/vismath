@@ -1,4 +1,6 @@
-const BAR_SPACING = 30;
+const BAR_HEIGHT = 64;   // matches h-16 on a bar
+const BAR_SPACING = 30;  // gap below each bar
+const STAGE_PADDING = 30;
 
 const stage = document.querySelector('#js-fraction-stage');
 const inputFraction = document.querySelector('#js-fraction-input');
@@ -15,27 +17,33 @@ function updateCount(parts, whole, denominator) {
 
 function addBar(numerator, denominator) {
     const bar = document.createElement('div');
-    bar.className = "js-bar flex w-60 h-14 border-2 absolute touch-none bg-mist-900";
+    bar.className = "js-bar flex w-64 h-16 absolute touch-none rounded-lg border-2 border-slate-700 bg-white shadow-md cursor-grab";
 
-    bar.style.top = `${30 + (14 * 4 + BAR_SPACING) * barCounter}px`;
+    bar.style.top = `${STAGE_PADDING + (BAR_HEIGHT + BAR_SPACING) * barCounter}px`;
     bar.style.left = "20px";
 
     const delButton = document.createElement('button');
-    delButton.className = "flex justify-center items-center absolute -top-3 -right-3 border-3 rounded-[100%] size-[1.5rem] bg-red-800";
+    delButton.className = "flex justify-center items-center absolute -top-2.5 -right-2.5 size-6 rounded-full bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold shadow ring-2 ring-white";
     delButton.textContent = "X"; 
 
     const currentCount = document.createElement('p');
-    currentCount.className = "js-count absolute -top-7.5 -left-1 text-xl font-bold"
+    currentCount.className = "js-count absolute -top-7 left-0 text-lg font-bold text-slate-700 whitespace-nowrap"
     currentCount.textContent = `${numerator}/${denominator}`;
 
 
     let pieces = "";
     
     for (let i = 0; i < denominator; i++) {
+        // Round the outer edges of the first and last piece, so the bar can keep
+        // its rounded corners without overflow-hidden clipping the X and the label.
+        let corners = "";
+        if (i === 0) corners += "rounded-l-md ";
+        if (i === denominator - 1) corners += "rounded-r-md border-r-0";
+
         if (i < numerator) {
-            pieces += `<div class="js-part border flex-1 flex items-center justify-center text-xl bg-amber-300">1/${denominator}</div>`;
+            pieces += `<div class="js-part ${corners} flex-1 flex items-center justify-center text-lg font-medium border-r border-slate-300 bg-amber-300 text-slate-900">1/${denominator}</div>`;
         } else {
-            pieces += `<div class="js-part border flex-1 flex items-center justify-center text-xl opacity-50">1/${denominator}</div>`;
+            pieces += `<div class="js-part ${corners} flex-1 flex items-center justify-center text-lg font-medium border-r border-slate-300 text-slate-400">1/${denominator}</div>`;
         }
     }
     bar.innerHTML = pieces;
@@ -90,7 +98,8 @@ function addBar(numerator, denominator) {
 
         if (shadedPart && Math.abs(coords.x - barNow.x) <= 5 && Math.abs(coords.y - barNow.y) <= 5) {
             shadedPart.classList.toggle("bg-amber-300")
-            shadedPart.classList.toggle("opacity-50");
+            shadedPart.classList.toggle("text-slate-900");
+            shadedPart.classList.toggle("text-slate-400");
             let whole = Number(bar.dataset.whole);
             let parts = bar.querySelectorAll('.bg-amber-300').length; 
 
@@ -108,17 +117,17 @@ function addBar(numerator, denominator) {
 
 function addNumber(number) {
     const numberContainer = document.createElement('div');
-    numberContainer.className = "h-10 px-3 absolute flex items-center justify-center touch-none";
+    numberContainer.className = "absolute flex items-center justify-center touch-none h-14 px-4 rounded-xl border-2 border-violet-400 bg-violet-50 text-violet-900 shadow-md cursor-grab";
 
-    numberContainer.style.top = `${30 + (14 * 4 + BAR_SPACING) * numberCounter}px`;
+    numberContainer.style.top = `${STAGE_PADDING + (BAR_HEIGHT + BAR_SPACING) * numberCounter}px`;
     numberContainer.style.left = "20px";
 
     const delButton = document.createElement('button');
-    delButton.className = "flex justify-center items-center absolute -top-3 -right-3 border-3 rounded-[100%] size-[1.5rem] bg-red-800";
+    delButton.className = "flex justify-center items-center absolute -top-2.5 -right-2.5 size-6 rounded-full bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold shadow ring-2 ring-white";
     delButton.textContent = "X"; 
 
     const value = document.createElement('div');
-    value.className = "font-bold text-4xl";
+    value.className = "font-bold text-3xl";
     value.textContent = number;
 
     numberContainer.appendChild(value);
