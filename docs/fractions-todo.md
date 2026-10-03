@@ -81,12 +81,13 @@ Written 2026-09-26. This is the real goal — the stuff below is in service of i
 
 ## Next
 
-- [ ] **Stacked fraction symbol in the BARS.** The dialog already does this (numerator over
+- [ ] **NEXT UP (picked 2026-10-03) — Stacked fraction symbol in the BARS.** The dialog already does this (numerator over
       denominator, border as the fraction line). The bar pieces still say `1/5` as flat text.
       Same trick should work — no KaTeX needed.
 - [ ] **Validation gaps still open:**
       - non-integers pass (`2.5` → pieces labelled `1/2.5`)
-      - no upper bound (`500` builds 500 divs)
+      - the error message is just "Please type the value again" — it does not say which rule
+        was broken (denominator 1–9, numerator ≤ denominator). A kid cannot guess.
 - [ ] **Responsive layout** — the stage is `w-full max-w-[50rem] h-[35rem]`, which does not behave
       on a phone. Practice target: `clamp()`, breakpoint prefixes, no hardcoded heights.
 - [ ] **Use it at work once.** Real session, real kid. Fix whatever actually broke.

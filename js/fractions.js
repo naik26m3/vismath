@@ -5,6 +5,8 @@ const STAGE_PADDING = 30;
 const stage = document.querySelector('#js-fraction-stage');
 const inputFraction = document.querySelector('#js-fraction-input');
 const inputNumber = document.querySelector('#js-number-input');
+const numeratorInput = inputFraction.querySelector('#js-input-numerator');
+const denominatorInput = inputFraction.querySelector('#js-input-denominator');
 const fractionForm = document.querySelector('#js-fraction-form');
 const numberForm = document.querySelector('#js-number-form');
 let barCounter = 0;
@@ -200,6 +202,16 @@ document.querySelector('#js-fraction-add-number-button').addEventListener('click
     inputNumber.showModal();
 });
 
+fractionForm.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && document.activeElement === numeratorInput) {
+        e.preventDefault();
+        // console.log(inputFraction.querySelector('#js-input-numerator').value);
+        if (numeratorInput.value !== '') {
+            denominatorInput.focus();
+        }
+    }
+})
+
 fractionForm.addEventListener('submit', (e) => {
     const error = document.querySelector('#js-fraction-input-error');
     error.textContent = '';
@@ -207,17 +219,18 @@ fractionForm.addEventListener('submit', (e) => {
     if (e.submitter.value === 'cancel') {
         return;
     }
-    
-    const numerator = Number(document.querySelector('#js-input-numerator').value);
-    const denominator = Number(document.querySelector('#js-input-denominator').value);
+
+    const numerator = Number(numeratorInput.value);
+    const denominator = Number(denominatorInput.value);
         
-    if (numerator >= 0 && denominator > 0 ) {
+    if (numerator >= 0 && denominator > 0 && denominator <= 9 && numerator <= denominator) {
         addBar(numerator, denominator);
+        numeratorInput.value = '';
+        denominatorInput.value = '';    
     } else {
         e.preventDefault();
-        error.textContent = "Denominator should be > 0 and Numerator should be >= 0";
+        error.textContent = "Please type the value again";
     }
-
 })
 
 numberForm.addEventListener('submit', (e) => {
@@ -237,4 +250,4 @@ document.querySelector('#js-fraction-clear-button').addEventListener('click', ()
     numberCounter = 0;
     stage.innerHTML = '';
 });
-
+    
