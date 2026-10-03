@@ -63,6 +63,8 @@ Written 2026-09-26. This is the real goal — the stuff below is in service of i
       so the total is arrived at rather than announced. Keeping the faded labels means the
       remainder is visible as quarters — "there are two more left" — which is what the
       `3/4 of 20` work needs. Watch it at denominator 12; it gets busy.
+      *Amended 2026-10-03:* once a number is merged in, the pieces show the share
+      (`5`) instead of `1/4`. The fraction still shows in the label above the bar.
 
 - [ ] **Improper fractions** (e.g. `9/8`). Decide what it should LOOK like first — this is a
       teaching decision, not a code one. Options:

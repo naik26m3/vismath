@@ -6,3 +6,4 @@ button {
   touch-action: manipulation;
 }
 
+.katex { font-size: 1.3em; font-family: inherit; }

@@ -13,8 +13,12 @@ let barCounter = 0;
 let numberCounter = 0;
 let isSelected = false;
 
+function frac(top,bottom) {
+    return katex.renderToString(`\\frac{${top}}{${bottom}}`)
+}
+
 function updateCount(parts, whole, denominator) {
-    return `${parts * whole/denominator} (${parts}/${denominator})`
+    return `${parts * whole/denominator} (${frac(parts,denominator)})`
 }
 
 function addBar(numerator, denominator) {
@@ -29,8 +33,8 @@ function addBar(numerator, denominator) {
     delButton.textContent = "X"; 
 
     const currentCount = document.createElement('p');
-    currentCount.className = "js-count absolute -top-7 left-0 text-lg font-bold text-slate-700 whitespace-nowrap"
-    currentCount.textContent = `${numerator}/${denominator}`;
+    currentCount.className = "js-count absolute -top-9 left-0 text-lg font-bold text-slate-700 whitespace-nowrap"
+    currentCount.innerHTML = frac(numerator, denominator);
 
 
     let pieces = "";
@@ -43,9 +47,9 @@ function addBar(numerator, denominator) {
         if (i === denominator - 1) corners += "rounded-r-md border-r-0";
 
         if (i < numerator) {
-            pieces += `<div class="js-part ${corners} flex-1 flex items-center justify-center text-lg font-medium border-r border-slate-300 bg-amber-300 text-slate-900">1/${denominator}</div>`;
+            pieces += `<div class="js-part ${corners} flex-1 flex items-center justify-center text-lg font-medium border-r border-slate-300 bg-amber-300 text-slate-900">${frac(1, denominator)}</div>`;
         } else {
-            pieces += `<div class="js-part ${corners} flex-1 flex items-center justify-center text-lg font-medium border-r border-slate-300 text-slate-400">1/${denominator}</div>`;
+            pieces += `<div class="js-part ${corners} flex-1 flex items-center justify-center text-lg font-medium border-r border-slate-300 text-slate-400">${frac(1, denominator)}</div>`;
         }
     }
     bar.innerHTML = pieces;
@@ -106,15 +110,15 @@ function addBar(numerator, denominator) {
             let parts = bar.querySelectorAll('.bg-amber-300').length; 
 
             if (bar.dataset.whole) {
-                currentCount.textContent = `${updateCount(parts, whole, denominator)}`
+                currentCount.innerHTML = `${updateCount(parts, whole, denominator)}`
             } else {
-                currentCount.textContent = `${parts}/${denominator}`;
+                currentCount.innerHTML = frac(parts, denominator);
             }
             
         }
         // console.log(barNow);    
         isDragging = false;
-    })
+    });
 }
 
 function addNumber(number) {
@@ -185,7 +189,7 @@ function addNumber(number) {
                 // console.log(part.classList.contains('bg-amber-300'));
             })
             const parts = bar.querySelectorAll('.bg-amber-300').length;
-            currentCount.textContent = `${updateCount(parts, number, pieces.length)}`
+            currentCount.innerHTML = `${updateCount(parts, number, pieces.length)}`
             bar.dataset.whole = number;
             numberContainer.remove();
             numberCounter--;
