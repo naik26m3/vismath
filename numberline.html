@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>Number Line — VisMath</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-stone-100 text-slate-800">
+
+    <header class="px-6 pt-6 pb-4 max-w-[52rem] mx-auto">
+        <a href="index.html" class="text-sm text-slate-500 hover:text-slate-800">&larr; Back</a>
+        <h1 class="text-2xl font-bold mt-1 text-slate-900">Number Line</h1>
+    </header>
+
+    <main class="px-6 pb-8 flex flex-col items-center gap-4">
+        <div id="js-number-line-stage"
+            class="w-full max-w-[52rem] h-[35rem] relative overflow-auto  touch-none bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-center items-center text-center gap-4">
+            <div id="js-inner-stage" class="w-[80%] flex flex-col justify-center items-start text-center gap-4 ">
+                <!-- <div class="js-line h-5 border-t-4  border-slate-400 flex justify-between items-center py-4.5" style="width: 20%;">
+                    <div class="w-0 flex flex-col items-center ">
+                        <div class="w-0.5 h-5 bg-slate-400"></div>
+                        <span class="">56</span>
+                    </div>
+                    <div class="w-0 flex flex-col items-center ">
+                        <div class="w-0.5 h-5 bg-slate-400"></div>
+                        <span class="">57</span>
+                    </div>
+                    <div class="w-0 flex flex-col items-center ">
+                        <div class="w-0.5 h-5 bg-slate-400"></div>
+                        <span class="">58</span>
+                    </div>
+                    <div class="w-0 flex flex-col items-center ">
+                        <div class="w-0.5 h-5 bg-slate-400"></div>
+                        <span class="">59</span>
+                    </div>
+                    <div class="w-0 flex flex-col items-center ">
+                        <div class="w-0.5 h-5 bg-slate-400"></div>
+                        <span class="">60</span>
+                    </div>
+
+                </div> -->
+            </div>
+        </div>
+        <div>
+            <label for="min">Min:</label>
+            <input id="js-input-min" name="min" type="number" inputmode="numeric" class="w-15 bg-white text-center"
+                value="56">
+            <label for="max">Max:</label>
+            <input id="js-input-max" name="max" type="number" inputmode="numeric" class="w-15 bg-white text-center"
+                value="99">
+            <button id="js-input-submit" type="submit"
+                class="rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-100 px-5 h-11">Submit</button>
+        </div>
+        <div id="js-error-msg" class="text-md font-medium text-red-600 h-3">
+
+        </div>
+    </main>
+
+
+    <script src="js/numberline.js"></script>
+</body>
+
+</html>
