@@ -57,6 +57,10 @@ BOOKS = {
     },
 }
 
+# Every question crop, as (lesson, file, page_index, clip, column_x0, column_x1,
+# next_question_y). Lets an audit find text that ended up in no crop at all.
+AUDIT = []
+
 DPI_CROP = 150
 DPI_PAGE = 120
 
@@ -136,6 +140,71 @@ def lines_of(page):
     return out
 
 
+# A gap taller than this between two pieces of content means the question has
+# ended and something else (a sidebar, a heading) has started.
+CONTENT_GAP = 22
+
+
+def content_extent(page, x_from, x_to, top, end):
+    """
+    The real bottom and right edge of one question.
+
+    Walks down from the question number through everything on the page in that
+    column - text lines, embedded images, and vector drawings (fraction strips,
+    grids, number lines are drawn, not text) - and stops at the first big gap.
+    That keeps sidebars like "Literacy Connections" out of the crop without
+    cutting a diagram off.
+    """
+    items = []                                           # (rect, text or "")
+    for block in page.get_text("dict")["blocks"]:
+        if block.get("type") == 1:                       # embedded image
+            items.append((fitz.Rect(block["bbox"]), ""))
+        for line in block.get("lines", []):
+            text = "".join(span["text"] for span in line["spans"]).strip()
+            items.append((fitz.Rect(line["bbox"]), text))
+    for drawing in page.get_drawings():
+        r = drawing["rect"]
+        if r.width < page.rect.width * 0.9:              # skip page borders
+            items.append((fitz.Rect(r), ""))
+
+    # "Overlaps the question", not "starts below its number": a stacked
+    # fraction's numerator and its tall brackets begin ABOVE the first line, and
+    # would otherwise be missed - cutting off the right side of that line.
+    items = [(r, t) for r, t in items
+             if r.x0 >= x_from and r.x0 < x_to and r.y1 > top and r.y0 < end]
+    items.sort(key=lambda item: item[0].y0)
+    if not items:
+        return top, end, x_to
+
+    upper = min(r.y0 for r, _ in items if r.y0 < top + 12)
+    bottom, right = items[0][0].y1, items[0][0].x1
+    for r, text in items[1:]:
+        # A section heading ("Extend", "Connect and Apply") ends the question
+        # even when it sits close enough not to leave a gap.
+        flat = " ".join(text.split())
+        if flat and any(flat.startswith(h) for h in SECTION_HEADINGS if h != "Questions"):
+            break
+        if r.y0 - bottom > CONTENT_GAP:
+            break
+        bottom = max(bottom, r.y1)
+        right = max(right, r.x1)
+    return upper, bottom, right
+
+
+def content_floor(page):
+    """
+    The lowest y that still belongs to the page body.
+
+    A fixed margin cut off real content: the last line of a question can sit
+    closer to the bottom than any safe-looking guess. Find the running footer
+    ("4 MHR • Chapter 1", "Answers • MHR 539") and stop just above it.
+    """
+    rect = page.rect
+    footer_tops = [l[1] for l in lines_of(page)
+                   if l[1] > rect.height - 70 and "MHR" in l[4]]
+    return (min(footer_tops) - 3) if footer_tops else rect.height - 30
+
+
 def default_section(title):
     """
     The section a question belongs to before any heading has been seen.
@@ -163,7 +232,7 @@ def crop_questions(doc, book, lesson, out_dir, rel_dir):
             continue
         page = doc[index]
         rect = page.rect
-        bottom_limit = rect.height - 45
+        bottom_limit = content_floor(page)
 
         body = [l for l in lines_of(page) if 40 < l[1] < bottom_limit]
         if not body:
@@ -217,9 +286,19 @@ def crop_questions(doc, book, lesson, out_dir, rel_dir):
 
             for i, (number, top, x0) in enumerate(starts):
                 end = starts[i + 1][1] if i + 1 < len(starts) else bottom_limit
-                right = column.x1 - (8 if len(columns) > 1 else 30)
-                clip = fitz.Rect(max(column.x0, x0 - 18), top - 8,
-                                 right, min(end - 4, bottom_limit))
+                end = min(end, bottom_limit)
+
+                # Crop to the question's own content, not to the column edge
+                # and the next question: the column edge cuts words off, and
+                # the last question in a column would run on into whatever
+                # sidebar sits below it.
+                # Only content that STARTS in this column counts; a line may
+                # still run past the gutter, which sets the right edge.
+                content_top, content_bottom, content_right = content_extent(
+                    page, x0 - 20, column.x1, top, end)
+                clip = fitz.Rect(max(rect.x0, x0 - 18), min(top - 8, content_top - 3),
+                                 min(rect.x1 - 4, content_right + 10),
+                                 min(end - 4, content_bottom + 8))
                 if clip.height < 12:
                     continue
 
@@ -237,6 +316,7 @@ def crop_questions(doc, book, lesson, out_dir, rel_dir):
 
                 save(page.get_pixmap(dpi=DPI_CROP, clip=clip), out_dir / name)
                 found.setdefault((section, number), []).append(f"{rel_dir}/{name}")
+                AUDIT.append((lesson_id, name, index, clip, column.x0, column.x1, end))
 
         if heading_positions:
             carried["section"] = heading_positions[-1][1]
@@ -375,7 +455,7 @@ def crop_answers(doc, book, lesson, segments, out_dir, rel_dir, all_ids):
         # Crop inside the column the answer starts in. If the next answer is in
         # a different column or on another page, run to the bottom of this one.
         same = (end_index == index and end_column == column)
-        bottom = (end_y - 3) if same else (doc[index].rect.height - 40)
+        bottom = (end_y - 3) if same else content_floor(doc[index])
 
         # Text runs a little past the halfway line, so widen the crop beyond
         # the column used for finding things, or words get cut off the right.
