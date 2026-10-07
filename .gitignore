@@ -8,3 +8,6 @@ Thumbs.db
 
 # contact sheets from tools/sheets.py - regenerate, do not commit
 tools/sheets/
+
+# crop review page from tools/review.py - local only
+tools/review/

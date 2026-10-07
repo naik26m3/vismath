@@ -61,6 +61,9 @@ BOOKS = {
 # next_question_y). Lets an audit find text that ended up in no crop at all.
 AUDIT = []
 
+# Every answer crop, as (lesson, file, page_index, clip). Used by review.py.
+ANSWER_AUDIT = []
+
 DPI_CROP = 150
 DPI_PAGE = 120
 
@@ -700,6 +703,7 @@ def crop_answers(doc, book, lesson, segments, out_dir, rel_dir, all_ids):
             starts.append((m.group(1), i))
 
     found = {}
+    row_cache = {}
     for n, (number, position) in enumerate(starts):
         index, column, y0, number_x, _ = mine[position]
 
@@ -713,19 +717,81 @@ def crop_answers(doc, book, lesson, segments, out_dir, rel_dir, all_ids):
         same = (end_index == index and end_column == column)
         bottom = (end_y - 3) if same else content_floor(doc[index])
 
-        # Text runs a little past the halfway line, so widen the crop beyond
-        # the column used for finding things, or words get cut off the right.
-        page_right = doc[index].rect.x1
-        # Start just left of the number itself; a fixed inset cuts it off on
-        # pages where the answers sit closer to the column edge.
-        clip = fitz.Rect(max(column.x0 + 4, number_x - 14), y0 - 7,
-                         min(column.x1 + 26, page_right - 6), bottom)
-        if clip.height < 10:
+        page = doc[index]
+        page_right = page.rect.x1
+
+        # Everything in this column, once per page: text lines, and drawings
+        # that are not page decoration (the coloured strip down the outer edge).
+        cache_key = (index, round(column.x0))
+        if cache_key not in row_cache:
+            lines = [fitz.Rect(line["bbox"])
+                     for block in page.get_text("dict", clip=column)["blocks"]
+                     for line in block.get("lines", [])]
+            pr = page.rect
+            drawings = []
+            for d in page.get_drawings():
+                r = fitz.Rect(d["rect"])
+                if (r.width > pr.width * 0.9 or r.height > pr.height * 0.5
+                        or r.x0 > pr.x1 - 45 or r.x1 < pr.x0 + 45):
+                    continue
+                if column.x0 <= r.x0 < column.x1:
+                    drawings.append(r)
+            row_cache[cache_key] = (lines, drawings)
+        lines, drawings = row_cache[cache_key]
+
+        def first_row_top(y):
+            # Just above whatever shares an answer's first row. A stacked
+            # fraction's numerator starts above the number, so a fixed margin
+            # either clips it or lets in a sliver of the neighbouring answer.
+            row = [r for r in lines if y - 12 <= r.y0 < y + 4 and r.y1 > y + 2]
+            return min([r.y0 for r in row] + [y])
+
+        crop_top = first_row_top(y0) - 2
+
+        # Bottom: where the NEXT answer's first row really begins.
+        if same:
+            next_top = first_row_top(end_y)
+            bottom = next_top - 1
+        else:
+            next_top = None
+            bottom = content_floor(page)
+
+        # A drawing that starts inside this answer can hang down into the next
+        # answer's row (the Egyptian numerals). Keep the whole drawing, and
+        # paint out the next answer's text where the two overlap.
+        blank = []
+        mine_drawn = [r for r in drawings if crop_top - 1 <= r.y0 < bottom]
+        if same and mine_drawn:
+            overhang = max(r.y1 for r in mine_drawn)
+            if bottom < overhang <= bottom + 14:
+                bottom = overhang + 1
+                blank = [r for r in lines if r.y0 >= next_top - 0.5]
+
+        # Last answer in a column: the limit is the page floor, which leaves a
+        # tall blank area under a short answer. Trim to what is actually there.
+        if not same:
+            below = [r for r in lines + drawings if crop_top - 1 <= r.y0 < bottom]
+            if below:
+                bottom = min(bottom, max(r.y1 for r in below) + 4)
+
+        # Right edge: the content itself, never past the measured gutter. The
+        # page edge would bring in the decorative strip beside the outer column.
+        inside = [r for r in lines + drawings if crop_top - 1 <= r.y0 < bottom]
+        content_right = max([r.x1 for r in inside], default=column.x1) + 6
+        right = min(column.x1, page_right - 6, content_right)
+
+        clip = fitz.Rect(max(column.x0 + 4, number_x - 14), crop_top, right, bottom)
+
+        # Only skip genuinely empty slivers. A one-line answer is about 10pt
+        # tall, so a higher cutoff silently drops real answers.
+        if clip.height < 5:
             continue
 
         name = f"{lesson_id}-a{int(number):02d}{IMAGE_EXT}"
-        save(doc[index].get_pixmap(dpi=DPI_CROP, clip=clip), out_dir / name)
+        save(doc[index].get_pixmap(dpi=DPI_CROP, clip=clip), out_dir / name,
+             clip=clip, blank=blank)
         found.setdefault(number, []).append(f"{rel_dir}/{name}")
+        ANSWER_AUDIT.append((lesson_id, name, index, clip))
 
     return found
 
