@@ -1,0 +1,98 @@
+{
+  "book": "mhr-grade-9",
+  "bookTitle": "MHR Mathematics 9",
+  "chapter": "1",
+  "lesson": "1.5",
+  "title": "Focus on Selecting Tools and Computational Strategies",
+  "bookPages": [
+    23,
+    28
+  ],
+  "pageImages": [
+    "assets/books/mhr-grade-9/pages/p35.webp",
+    "assets/books/mhr-grade-9/pages/p36.webp",
+    "assets/books/mhr-grade-9/pages/p37.webp",
+    "assets/books/mhr-grade-9/pages/p38.webp",
+    "assets/books/mhr-grade-9/pages/p39.webp",
+    "assets/books/mhr-grade-9/pages/p40.webp"
+  ],
+  "items": [
+    {
+      "section": "Practise",
+      "number": "1",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.5-practise-q1.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.5-a1.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Practise",
+      "number": "9",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.5-practise-q9.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.5-a9.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Practise",
+      "number": "10",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.5-practise-q10.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.5-a10.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Connect and Apply",
+      "number": "11",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.5-connect-and-apply-q11.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.5-a11.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Connect and Apply",
+      "number": "12",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.5-connect-and-apply-q12.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.5-a12.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Connect and Apply",
+      "number": "13",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.5-connect-and-apply-q13.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.5-a13.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Connect and Apply",
+      "number": "14",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.5-connect-and-apply-q14.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.5-a14.webp"
+      ],
+      "hasAnswerKey": true
+    }
+  ]
+}

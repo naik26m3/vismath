@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>Answer Key</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="bg-stone-100 text-slate-800 h-dvh flex flex-col overflow-hidden">
+
+  <!-- top bar: section + question picker -->
+  <header class="shrink-0 px-4 py-3 flex flex-wrap items-center gap-3 bg-white border-b border-slate-200">
+    <select id="section" class="rounded-xl border border-slate-300 bg-white px-3 h-11 text-base"></select>
+    <div id="questions" class="flex flex-wrap gap-2"></div>
+  </header>
+
+  <!-- the two panes -->
+  <main class="flex-1 min-h-0 flex flex-col landscape:flex-row gap-3 p-3">
+
+    <!-- QUESTION -->
+    <section id="questionPane" class="flex-1 min-h-0 min-w-0 flex flex-col rounded-2xl bg-white border border-slate-200 shadow-sm">
+      <div class="shrink-0 flex items-center justify-between px-4 py-2 border-b border-slate-200">
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Question</h2>
+        <div class="flex gap-2">
+          <button data-page-toggle="question"
+            class="rounded-lg border border-slate-300 hover:bg-slate-100 px-3 h-9 text-sm font-medium">Page</button>
+          <button data-expand="question"
+            class="rounded-lg border border-slate-300 hover:bg-slate-100 px-3 h-9 text-sm font-medium">Full</button>
+        </div>
+      </div>
+      <div id="questionBody" class="flex-1 min-h-0 overflow-auto p-4"></div>
+    </section>
+
+    <!-- ANSWER -->
+    <section id="answerPane" class="flex-1 min-h-0 min-w-0 flex flex-col rounded-2xl bg-white border border-slate-200 shadow-sm">
+      <div class="shrink-0 flex items-center justify-between px-4 py-2 border-b border-slate-200">
+        <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Answer</h2>
+        <div class="flex gap-2">
+          <button id="askAi"
+            class="rounded-lg bg-sky-600 hover:bg-sky-700 text-white px-3 h-9 text-sm font-medium">Ask AI</button>
+          <button data-page-toggle="answer"
+            class="rounded-lg border border-slate-300 hover:bg-slate-100 px-3 h-9 text-sm font-medium">Page</button>
+          <button data-expand="answer"
+            class="rounded-lg border border-slate-300 hover:bg-slate-100 px-3 h-9 text-sm font-medium">Full</button>
+        </div>
+      </div>
+      <div id="answerBody" class="flex-1 min-h-0 overflow-auto p-4"></div>
+    </section>
+
+  </main>
+
+  <script>
+    // ----------------------------------------------------------------
+    // Real data, hand-checked. MHR Grade 9, section 2.1.
+    // Questions: book p.45  (PDF page 57)
+    // Answers:   book p.542 (PDF page 546)
+    //
+    // Pages are pre-rendered PNGs (~300 KB each) rather than the 17 MB
+    // PDF, so a Fire HD loads one image instead of parsing a book.
+    // ----------------------------------------------------------------
+    const DATA = {
+      "2.1": {
+        label: "2.1 Hypotheses and Sources of Data",
+        items: {
+          "1": {
+            qCrops: ["crops/p57-q1.png"],
+            q: "State the opposite of each hypothesis.",
+            qPages: ["pages/p57.png"],
+            aPages: ["pages/p546.png"],
+            parts: {
+              "a": { q: "Most people's favourite number is 7.", a: "Most people's favourite number is not 7." },
+              "b": { q: "Adults spend more time listening to classical music than to rap.", a: "Adults do not spend more time listening to classical music than to rap. (Alternative: Adults spend either less time or as much time listening to classical music as they spend listening to rap.)" },
+              "c": { q: "In Ontario, more teenagers join soccer teams than hockey teams.", a: "In Ontario, the number of teenagers who join hockey teams is greater than or equal to the number who join soccer teams." },
+              "d": { q: "Chocolate is not the most popular flavour of ice cream.", a: "Chocolate is the most popular flavour of ice cream." }
+            }
+          },
+          "2": {
+            qCrops: ["crops/p57-q2.png"],
+            q: "State a hypothesis about a relationship between each pair of variables. Then, state the opposite of each hypothesis.",
+            qPages: ["pages/p57.png"],
+            aPages: ["pages/p546.png"],
+            varies: true,
+            parts: {
+              "a": { q: "a student's age and time spent doing homework", a: "Hypothesis: Time spent doing homework increases as a student's age increases. Opposite: Time spent doing homework does not increase as a student's age increases." },
+              "b": { q: "a mother's height and the height of her children", a: "Hypothesis: Children tend to grow to the same height as their mothers. Opposite: Children do not tend to grow to the same height as their mothers." },
+              "c": { q: "temperature and crime rates", a: "Hypothesis: As temperature increases, the crime rate also increases. Opposite: As temperature increases, the crime rate decreases or remains constant." },
+              "d": { q: "the cost of gasoline and the number of people using public transit", a: "Hypothesis: As the cost of gasoline increases, the number of people using public transit increases. Opposite: As the cost of gasoline increases, the number of people using public transit decreases or stays the same." }
+            }
+          },
+          "3": {
+            qCrops: ["crops/p57-q3.png"],
+            q: "Which of the following data are primary and which are secondary? Explain.",
+            qPages: ["pages/p57.png"],
+            aPages: ["pages/p546.png"],
+            parts: {
+              "a": { q: "An office manager hands out a questionnaire to see if employees want to work earlier hours during the summer.", a: "Primary; the office manager gathers the data." },
+              "b": { q: "A student finds data on Internet use in a report published by Statistics Canada.", a: "Secondary; the student uses data gathered by Statistics Canada." },
+              "c": { q: "A researcher collects information about how far people travel on public transit by talking to passengers on the buses.", a: "Primary; the researcher gathers the data." },
+              "d": { q: "A researcher downloads data about the length of rides taken on public transit from a transit authority's Web site.", a: "Secondary; the researcher uses data gathered by the transit authority." }
+            }
+          },
+          "4": {
+            qCrops: ["crops/p57-q4.png"],
+            q: "Identify each data source as primary or secondary. State one advantage of each source of data.",
+            qPages: ["pages/p57.png"],
+            aPages: ["pages/p546.png"],
+            note: "Answers about advantages will vary.",
+            parts: {
+              "a": { q: "A researcher interviewed 100 students about their study habits.", a: "Primary; data are up-to-date" },
+              "b": { q: "A sporting goods company searched on the Internet for data on how Canadians spend their leisure time.", a: "Secondary; Internet search is fast and easy" },
+              "c": { q: "A manufacturer surveyed 1000 recent customers about possible changes to a product.", a: "Primary; getting opinions from customers" },
+              "d": { q: "A student found advertisements in out-of-town newspapers at a library to check admission prices at theatres across the country.", a: "Primary; data are up-to-date" }
+            }
+          },
+          "5": {
+            qCrops: ["crops/p57-q5.png"],
+            q: "Connect and Apply",
+            qPages: ["pages/p57.png", "pages/p58.png"],
+            aPages: ["pages/p546.png", "pages/p547.png"],
+            varies: true,
+            parts: {
+              "a": { q: "Make a hypothesis about whether the students in your class prefer cats or dogs as pets.", a: "Most students in the class prefer dogs as pets." },
+              "b": { q: "Describe how you could test your hypothesis. Explain whether you would use primary or secondary data.", a: "Survey the class. Primary data are best since the population is small and secondary data may not be available." }
+            }
+          }
+        }
+      },
+      "9.2": {
+        label: "9.2 Perimeter and Area Relationships of a Rectangle",
+        items: {
+          "3": {
+            q: "Investigate B — this one runs across two pages.",
+            // a) and b) sit at the bottom of p.486; c) is at the top of p.487.
+            qCrops: ["crops/p490-q3.png", "crops/p491-q3cont.png"],
+            qPages: ["pages/p490.png", "pages/p491.png"],
+            aPages: [],
+            note: "Investigate questions have no entry in the answer key — the answer depends on the table the student filled in.",
+            parts: {
+              "a": { q: "What are the dimensions of the rectangle with maximum area?", a: "— not in the answer key" },
+              "b": { q: "Compare this result with your hypothesis.", a: "— not in the answer key" },
+              "c": { q: "Compare this result with the maximum area you found in Investigate A. Will the hedge allow Brandon to enclose more, less, or the same amount of area as before?", a: "— not in the answer key" }
+            }
+          }
+        }
+      }
+    };
+
+    const sectionSelect = document.getElementById("section");
+    const questionsBox  = document.getElementById("questions");
+    const questionBody  = document.getElementById("questionBody");
+    const answerBody    = document.getElementById("answerBody");
+    const questionPane  = document.getElementById("questionPane");
+    const answerPane    = document.getElementById("answerPane");
+
+    let current = null;                       // the question number, e.g. "3"
+    const showingPage = { question: false, answer: false };
+
+    for (const key of Object.keys(DATA)) {
+      const option = document.createElement("option");
+      option.value = key;
+      option.textContent = DATA[key].label;
+      sectionSelect.appendChild(option);
+    }
+
+    function section() { return DATA[sectionSelect.value]; }
+
+    function drawQuestionButtons() {
+      questionsBox.innerHTML = "";
+      for (const number of Object.keys(section().items)) {
+        const button = document.createElement("button");
+        button.dataset.number = number;
+        button.textContent = number;
+        questionsBox.appendChild(button);
+        button.addEventListener("click", () => select(number));
+      }
+      select(Object.keys(section().items)[0]);
+    }
+
+    function paintButtons() {
+      for (const button of questionsBox.children) {
+        const on = button.dataset.number === current;
+        button.className = "rounded-lg px-4 h-11 min-w-11 font-medium tabular-nums border " +
+          (on ? "bg-sky-600 text-white border-sky-600"
+              : "bg-white border-slate-300 hover:bg-slate-100");
+      }
+    }
+
+    function select(number) {
+      current = number;
+      showingPage.question = false;
+      showingPage.answer = false;
+      paintButtons();
+      render();
+    }
+
+    function partList(item, which) {
+      const list = document.createElement("dl");
+      list.className = "flex flex-col gap-3";
+
+      for (const [letter, part] of Object.entries(item.parts)) {
+        const row = document.createElement("div");
+        row.className = "flex gap-3";
+
+        const tag = document.createElement("dt");
+        tag.className = "shrink-0 w-6 font-bold text-slate-400";
+        tag.textContent = letter + ")";
+
+        const value = document.createElement("dd");
+        value.className = which === "a" ? "text-slate-900 font-medium" : "text-slate-700";
+        value.textContent = part[which];
+
+        row.appendChild(tag);
+        row.appendChild(value);
+        list.appendChild(row);
+      }
+      return list;
+    }
+
+    function render() {
+      const item = section().items[current];
+
+      // --- question side
+      questionBody.innerHTML = "";
+      if (showingPage.question) {
+        questionBody.appendChild(pageImages(item.qPages));
+      } else if (item.qCrops) {
+        // The question exactly as it appears in the book — cut straight out of
+        // the page, so diagrams and notation come along and nothing is retyped.
+        questionBody.appendChild(pageImages(item.qCrops));
+      } else {
+        const stem = document.createElement("p");
+        stem.className = "text-lg font-semibold text-slate-900 mb-4";
+        stem.textContent = current + ". " + item.q;
+        questionBody.appendChild(stem);
+        questionBody.appendChild(partList(item, "q"));
+      }
+
+      // --- answer side
+      answerBody.innerHTML = "";
+      if (showingPage.answer) {
+        answerBody.appendChild(pageImages(item.aPages));
+      } else {
+        if (item.varies || item.note) {
+          const note = document.createElement("p");
+          note.className = "text-sm text-amber-700 bg-amber-50 rounded-lg px-3 py-2 mb-4";
+          note.textContent = item.note || "Answers will vary. Examples:";
+          answerBody.appendChild(note);
+        }
+        answerBody.appendChild(partList(item, "a"));
+      }
+    }
+
+    // A question can run over two pages, so this takes a list and stacks them.
+    // The pane scrolls, so you read off the bottom of one page onto the next.
+    function pageImages(sources) {
+      const wrap = document.createElement("div");
+      wrap.className = "flex flex-col gap-3";
+
+      if (!sources || sources.length === 0) {
+        wrap.innerHTML = "<p class='text-sm text-slate-400'>No page saved for this one yet.</p>";
+        return wrap;
+      }
+
+      sources.forEach((src, index) => {
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = "Page from the book";
+        img.className = "w-full rounded-lg border border-slate-200";
+        wrap.appendChild(img);
+
+        if (sources.length > 1) {
+          const label = document.createElement("p");
+          label.className = "text-xs text-slate-400 text-center -mt-1";
+          label.textContent = "page " + (index + 1) + " of " + sources.length;
+          wrap.appendChild(label);
+        }
+      });
+      return wrap;
+    }
+
+    // --- buttons
+
+    for (const button of document.querySelectorAll("[data-page-toggle]")) {
+      button.addEventListener("click", () => {
+        const side = button.dataset.pageToggle;
+        showingPage[side] = !showingPage[side];
+        button.className = "rounded-lg px-3 h-9 text-sm font-medium border " +
+          (showingPage[side] ? "bg-slate-800 text-white border-slate-800"
+                             : "border-slate-300 hover:bg-slate-100");
+        render();
+      });
+    }
+
+    // "Full" hides the other pane, for when one side needs the whole screen.
+    for (const button of document.querySelectorAll("[data-expand]")) {
+      button.addEventListener("click", () => {
+        const side = button.dataset.expand;
+        const other = side === "question" ? answerPane : questionPane;
+        other.classList.toggle("hidden");
+        button.textContent = other.classList.contains("hidden") ? "Split" : "Full";
+      });
+    }
+
+    document.getElementById("askAi").addEventListener("click", () => {
+      const item = section().items[current];
+      let text = `From ${section().label}, question ${current}.\n\n${item.q}\n\n`;
+      for (const [letter, part] of Object.entries(item.parts)) {
+        text += `${letter}) ${part.q}\n   Textbook answer: ${part.a}\n`;
+      }
+      text += `\nExplain the reasoning step by step, simply enough for a grade 9 student.`;
+
+      navigator.clipboard.writeText(text).catch(() => {});
+      window.open("https://chatgpt.com/?q=" + encodeURIComponent(text), "_blank");
+    });
+
+    sectionSelect.addEventListener("change", drawQuestionButtons);
+    drawQuestionButtons();
+  </script>
+
+</body>
+
+</html>

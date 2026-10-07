@@ -1,0 +1,68 @@
+{
+  "book": "mhr-grade-9",
+  "bookTitle": "MHR Mathematics 9",
+  "chapter": "1",
+  "lesson": "1.2",
+  "title": "Focus on Communicating",
+  "bookPages": [
+    10,
+    13
+  ],
+  "pageImages": [
+    "assets/books/mhr-grade-9/pages/p22.webp",
+    "assets/books/mhr-grade-9/pages/p23.webp",
+    "assets/books/mhr-grade-9/pages/p24.webp",
+    "assets/books/mhr-grade-9/pages/p25.webp"
+  ],
+  "items": [
+    {
+      "section": "Investigate",
+      "number": "6",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.2-investigate-q6.webp"
+      ],
+      "answerImages": [],
+      "hasAnswerKey": false
+    },
+    {
+      "section": "Investigate",
+      "number": "7",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.2-investigate-q7.webp"
+      ],
+      "answerImages": [],
+      "hasAnswerKey": false
+    },
+    {
+      "section": "Investigate",
+      "number": "8",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.2-investigate-q8.webp"
+      ],
+      "answerImages": [],
+      "hasAnswerKey": false
+    },
+    {
+      "section": "Extend",
+      "number": "9",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.2-extend-q9.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.2-a9.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Extend",
+      "number": "10",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.2-extend-q10.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.2-a10.webp"
+      ],
+      "hasAnswerKey": true
+    }
+  ]
+}

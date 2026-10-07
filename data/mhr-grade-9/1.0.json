@@ -1,0 +1,44 @@
+{
+  "book": "mhr-grade-9",
+  "bookTitle": "MHR Mathematics 9",
+  "chapter": "1",
+  "lesson": "1.0",
+  "title": "Get Ready",
+  "bookPages": [
+    4,
+    5
+  ],
+  "pageImages": [
+    "assets/books/mhr-grade-9/pages/p16.webp",
+    "assets/books/mhr-grade-9/pages/p17.webp"
+  ],
+  "items": [
+    {
+      "section": "Investigate",
+      "number": "1",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.0-investigate-q1.webp"
+      ],
+      "answerImages": [],
+      "hasAnswerKey": false
+    },
+    {
+      "section": "Investigate",
+      "number": "4",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.0-investigate-q4.webp"
+      ],
+      "answerImages": [],
+      "hasAnswerKey": false
+    },
+    {
+      "section": "Investigate",
+      "number": "7",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.0-investigate-q7.webp"
+      ],
+      "answerImages": [],
+      "hasAnswerKey": false
+    }
+  ]
+}

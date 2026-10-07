@@ -1,0 +1,63 @@
+{
+  "book": "mhr-grade-9",
+  "bookTitle": "MHR Mathematics 9",
+  "chapter": "1",
+  "lesson": "1.R",
+  "title": "Chapter 1 Review",
+  "bookPages": [
+    37,
+    39
+  ],
+  "pageImages": [
+    "assets/books/mhr-grade-9/pages/p49.webp",
+    "assets/books/mhr-grade-9/pages/p50.webp",
+    "assets/books/mhr-grade-9/pages/p51.webp"
+  ],
+  "items": [
+    {
+      "section": "Investigate",
+      "number": "1",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.R-investigate-q1.webp"
+      ],
+      "answerImages": [],
+      "hasAnswerKey": false
+    },
+    {
+      "section": "Investigate",
+      "number": "2",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.R-investigate-q2.webp"
+      ],
+      "answerImages": [],
+      "hasAnswerKey": false
+    },
+    {
+      "section": "Investigate",
+      "number": "3",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.R-investigate-q3.webp"
+      ],
+      "answerImages": [],
+      "hasAnswerKey": false
+    },
+    {
+      "section": "Investigate",
+      "number": "4",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.R-investigate-q4.webp"
+      ],
+      "answerImages": [],
+      "hasAnswerKey": false
+    },
+    {
+      "section": "Investigate",
+      "number": "5",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.R-investigate-q5.webp"
+      ],
+      "answerImages": [],
+      "hasAnswerKey": false
+    }
+  ]
+}

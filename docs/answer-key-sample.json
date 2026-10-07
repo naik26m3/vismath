@@ -1,0 +1,32 @@
+{
+  "_note": "Proof-of-concept only. Hand-checked sample from MHR Grade 9, Answers section, book page 542 (PDF page 546). Shows the shape the real file would take.",
+  "book": "MHR Mathematics 9",
+  "sections": {
+    "2.2": {
+      "title": "Sampling Principles",
+      "pages": "48-55",
+      "answers": {
+        "1a": "all children",
+        "1b": "everyone who wrote the test",
+        "1c": "all cars",
+        "1d": "all food stores",
+        "2a": "age when girls and boys learn to walk; sample",
+        "2b": "test marks; census",
+        "2c": "salaries of Canadian employees; sample",
+        "2d": "people's heights and ages; census",
+        "2e": "make of car in school parking lot; census",
+        "2f": "colour of cars driving by the school; sample",
+        "3a": {
+          "varies": true,
+          "example": "Survey every fourth customer who comes into the cafe."
+        },
+        "3b": {
+          "varies": true,
+          "example": "Randomly select 1% of the teenagers in every high school across Ontario."
+        },
+        "9": "grade 9, 41; grade 10, 38; grade 11, 36; grade 12, 35",
+        "10a": "randInt(12,36,25)"
+      }
+    }
+  }
+}

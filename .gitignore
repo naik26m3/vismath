@@ -1,0 +1,7 @@
+# Textbook PDFs. Copyrighted — never push these anywhere public.
+books/
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/

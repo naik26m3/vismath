@@ -1,0 +1,152 @@
+{
+  "book": "mhr-grade-9",
+  "bookTitle": "MHR Mathematics 9",
+  "chapter": "1",
+  "lesson": "1.3",
+  "title": "Focus on Connecting",
+  "bookPages": [
+    14,
+    18
+  ],
+  "pageImages": [
+    "assets/books/mhr-grade-9/pages/p26.webp",
+    "assets/books/mhr-grade-9/pages/p27.webp",
+    "assets/books/mhr-grade-9/pages/p28.webp",
+    "assets/books/mhr-grade-9/pages/p29.webp",
+    "assets/books/mhr-grade-9/pages/p30.webp"
+  ],
+  "items": [
+    {
+      "section": "Practise",
+      "number": "1",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.3-practise-q1.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.3-a1.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Practise",
+      "number": "2",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.3-practise-q2.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.3-a2.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Practise",
+      "number": "3",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.3-practise-q3.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.3-a3.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Practise",
+      "number": "4",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.3-practise-q4.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.3-a4.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Connect and Apply",
+      "number": "5",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.3-connect-and-apply-q5.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.3-a5.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Connect and Apply",
+      "number": "6",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.3-connect-and-apply-q6.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.3-a6.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Connect and Apply",
+      "number": "7",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.3-connect-and-apply-q7.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.3-a7.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Connect and Apply",
+      "number": "8",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.3-connect-and-apply-q8.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.3-a8.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Connect and Apply",
+      "number": "9",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.3-connect-and-apply-q9.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.3-a9.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Extend",
+      "number": "10",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.3-extend-q10.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.3-a10.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Extend",
+      "number": "11",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.3-extend-q11.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.3-a11.webp"
+      ],
+      "hasAnswerKey": true
+    },
+    {
+      "section": "Extend",
+      "number": "12",
+      "questionImages": [
+        "assets/books/mhr-grade-9/questions/1.3-extend-q12.webp"
+      ],
+      "answerImages": [
+        "assets/books/mhr-grade-9/answers/1.3-a12.webp"
+      ],
+      "hasAnswerKey": true
+    }
+  ]
+}

@@ -6,7 +6,7 @@ const errorMsg = document.querySelector('#js-error-msg');
 
 function makeLine(min, max) {
     const line = document.createElement('div');
-    line.className = "js-line h-5 border-t-4  border-slate-400 flex justify-between items-center py-4.5";
+    line.className = "js-line h-5 border-t-4  border-slate-400 flex justify-between items-center py-5";
     line.style.width = `${((max - min) / 20) * 100}%`;
 
     let ticks = '';
@@ -14,7 +14,7 @@ function makeLine(min, max) {
     for (let i = min; i <= max; i++) {
         ticks += `<div class="w-0 flex flex-col items-center ">
                     <div class="w-0.5 h-5 bg-slate-400"></div>
-                    <span class="">${i}</span>
+                    <span class="text-lg">${i}</span>
                 </div>`
     }
 
