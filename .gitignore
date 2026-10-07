@@ -5,3 +5,6 @@ books/
 .DS_Store
 Thumbs.db
 .vscode/
+
+# contact sheets from tools/sheets.py - regenerate, do not commit
+tools/sheets/

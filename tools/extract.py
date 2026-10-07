@@ -71,9 +71,27 @@ IMAGE_EXT = ".webp"
 WEBP_QUALITY = 80
 
 
-def save(pixmap, path):
-    """Write a pixmap as WebP."""
-    image = Image.open(io.BytesIO(pixmap.tobytes("png")))
+def save(pixmap, path, clip=None, blank=()):
+    """
+    Write a pixmap as WebP.
+
+    `blank` is a list of page rectangles to paint white first - headings and
+    "For help with..." lines that share a row with something the crop needs,
+    so the rectangle cannot simply stop above them.
+    """
+    image = Image.open(io.BytesIO(pixmap.tobytes("png"))).convert("RGB")
+    if clip is not None and blank:
+        from PIL import ImageDraw
+        draw = ImageDraw.Draw(image)
+        sx = image.width / clip.width
+        sy = image.height / clip.height
+        for r in blank:
+            box = r & clip
+            if box.is_empty:
+                continue
+            draw.rectangle([(box.x0 - clip.x0) * sx - 2, (box.y0 - clip.y0) * sy - 2,
+                            (box.x1 - clip.x0) * sx + 2, (box.y1 - clip.y0) * sy + 2],
+                           fill="white")
     image.save(path, "WEBP", quality=WEBP_QUALITY, method=6)
 
 
@@ -87,6 +105,24 @@ SECTION_HEADINGS = [
     "Achievement Check", "Chapter Problem", "Chapter Problem Wrap-Up",
     "Use Technology", "Math Contest",
 ]
+
+# Some lessons split their Investigate into parts headed "A: Pentominoes",
+# "B: Sums of cubes". Numbering restarts at 1 in each part.
+PART_HEADING = re.compile(r'^([A-D]):\s+[A-Z]')
+
+
+def section_heading_name(text):
+    """The section a heading line opens, or None if it isn't one."""
+    flat = " ".join(text.split())
+    if len(flat) < 70:
+        m = PART_HEADING.match(flat)
+        if m:
+            return f"Investigate {m.group(1)}"
+    for name in SECTION_HEADINGS:
+        if name != "Questions" and flat.startswith(name):
+            return name
+    return None
+
 
 # The answer key numbers only the exercise run, and that run is continuous
 # across these headings (Practise 1-4, Connect and Apply 5-9, Extend 10-11).
@@ -140,12 +176,25 @@ def lines_of(page):
     return out
 
 
+# The step tabs printed beside Investigate questions in the problem-solving
+# lessons. They are labels for the page, not part of any question.
+BANNER_LABELS = {"Understand the Problem", "Choose a Strategy",
+                 "Carry Out the Strategy", "Reflect", "Look Back"}
+
+# Words in a question that point at a picture. A photo in the margin is only
+# taken as part of the question when the question refers to it - otherwise it
+# is decoration (a snowy landscape beside a temperature question).
+VISUAL_CUE = re.compile(
+    r'\b(shown|shows? (?:below|at)|diagram|picture|photo|figure|map|graph|'
+    r'board|illustrat\w*|labelled|pattern below|at (?:the )?(?:left|right))\b', re.I)
+
 # A gap taller than this between two pieces of content means the question has
 # ended and something else (a sidebar, a heading) has started.
 CONTENT_GAP = 22
 
 
-def content_extent(page, x_from, x_to, top, end):
+def content_extent(page, x_from, x_to, top, end, body_right=None, next_top=None,
+                   single_column=True):
     """
     The real bottom and right edge of one question.
 
@@ -155,40 +204,238 @@ def content_extent(page, x_from, x_to, top, end):
     That keeps sidebars like "Literacy Connections" out of the crop without
     cutting a diagram off.
     """
-    items = []                                           # (rect, text or "")
+    items = []                                   # (rect, text, kind)
     for block in page.get_text("dict")["blocks"]:
-        if block.get("type") == 1:                       # embedded image
-            items.append((fitz.Rect(block["bbox"]), ""))
+        if block.get("type") == 1:
+            items.append((fitz.Rect(block["bbox"]), "", "image"))
         for line in block.get("lines", []):
             text = "".join(span["text"] for span in line["spans"]).strip()
-            items.append((fitz.Rect(line["bbox"]), text))
+            items.append((fitz.Rect(line["bbox"]), text, "text"))
+    rect = page.rect
+    kept = []
     for drawing in page.get_drawings():
-        r = drawing["rect"]
-        if r.width < page.rect.width * 0.9:              # skip page borders
-            items.append((fitz.Rect(r), ""))
+        r = fitz.Rect(drawing["rect"])
+        # Page decoration, not content: the coloured strip down the outer
+        # edge, full-width rules, and anything taller than half the page.
+        if (r.width > rect.width * 0.9 or r.height > rect.height * 0.5
+                or r.x0 > rect.x1 - 45 or r.x1 < rect.x0 + 45):
+            continue
+        items.append((r, "", "drawing"))
+        kept.append(r)
+    # Whole diagrams, assembled from the pieces they are drawn with. A group
+    # that just traces the edge of a photo is the photo's frame, not a
+    # diagram - leave it to be judged as the image it surrounds.
+    images = [r for r, _, k in items if k == "image"]
 
-    # "Overlaps the question", not "starts below its number": a stacked
-    # fraction's numerator and its tall brackets begin ABOVE the first line, and
-    # would otherwise be missed - cutting off the right side of that line.
-    items = [(r, t) for r, t in items
-             if r.x0 >= x_from and r.x0 < x_to and r.y1 > top and r.y0 < end]
+    def frames_an_image(cluster):
+        return any((cluster & im).get_area() > 0.8 * min(cluster.get_area(), im.get_area())
+                   for im in images)
+
+    for cluster in drawing_clusters(kept):
+        if is_figure(cluster) and not frames_an_image(cluster):
+            items.append((cluster, "", "figure"))
+
+    # A stacked fraction's numerator and its brackets begin a little ABOVE the
+    # question's first line, so allow a small rise - but only a small one. A
+    # concept box or a page decoration also "overlaps" the question, and lets
+    # the crop climb to the top of the page if nothing limits it.
+    RISE = 14
+    def is_heading(text):
+        # Section headings, and the italic "For help with questions 3 and 4,
+        # see Example 2." lines that sit between questions. Neither belongs to
+        # the question above or below it.
+        flat = " ".join(text.split())
+        return bool(flat) and (section_heading_name(flat) is not None
+                               or flat.startswith("For help with"))
+
+    # Step tabs: drop the label and the coloured shape behind it.
+    banners = [r for r, t, k in items if k == "text" and " ".join(t.split()) in BANNER_LABELS]
+    def under_banner(r):
+        return any(r.intersects(b + (-40, -8, 40, 8)) for b in banners)
+
+    # Every heading the crop could reach. They are painted out afterwards, so
+    # it costs nothing to list one that ends up outside the crop.
+    headings = [r for r, t, k in items
+                if k == "text" and is_heading(t) and x_from - 10 <= r.x0 < x_to
+                and top - 150 <= r.y0 < end]
+    ceiling = None
+
+    all_items = items
+    heading_bottom = max((r.y1 for r, t, k in all_items
+                          if k == "text" and is_heading(t) and x_from <= r.x0 < x_to
+                          and r.y0 < top), default=-1)
+
+    def tall_figure_here(r, k):
+        # A diagram can start well above the question number (a sudoku grid
+        # beside the question text). If most of it lies below the number, it
+        # is this question's - as long as it doesn't reach past a heading.
+        # A heading beside it is fine - headings are painted out of the crop.
+        return ((k in ("image", "figure") or (k == "drawing" and is_figure(r)))
+                and r.y0 < top and r.y1 - top > r.height / 2
+                and r.y0 >= top - 80
+                and x_from <= r.x0 < x_to and r.y0 < end)
+
+    extra = [(r, t, k) for r, t, k in items if tall_figure_here(r, k)]
+    items = [(r, t, k) for r, t, k in items
+             if r.x0 >= x_from and r.x0 < x_to
+             and r.y0 >= top - RISE and r.y1 > top and r.y0 < end
+             # a heading sitting just above this question is not part of it
+             and not (k == "text" and is_heading(t) and r.y0 < top)
+             # something starting right above the NEXT question number is
+             # that question's figure rising above its line, not this one's
+             and not (next_top is not None and r.y0 >= next_top - 12)
+             and not under_banner(r)]
+    items += [it for it in extra if it not in items]
+
+    # A figure's own labels ("3.7 cm" over the hockey puck) can sit higher than
+    # the question number allows for. Let them rise the same small amount
+    # above the figure itself, as long as they stay below any heading.
+    figures = [r for r, _, k in items if k in ("image", "figure") or (k == "drawing" and is_figure(r))]
+    for fig in figures:
+        for r, t, k in all_items:
+            if (k == "text" and t and not is_heading(t)
+                    and fig.y0 - RISE <= r.y0 < fig.y0
+                    and r.x1 > fig.x0 - 10 and r.x0 < fig.x1 + 10
+                    and (ceiling is None or r.y0 > ceiling)
+                    and (r, t, k) not in items):
+                items.append((r, t, k))
+
+    # Past the point where question text wraps is the margin. Keep a real
+    # figure there (the sudoku grid sits beside its question), drop sidebar
+    # text, tab banners and the small highlight boxes around glossary terms.
+    if body_right is not None:
+        items = [(r, t, k) for r, t, k in items
+                 if r.x0 <= body_right + 8
+                 or (k in ("image", "figure") and is_figure(r) and not is_tab(r))
+                 or (k == "drawing" and is_figure(r) and not is_tab(r))]
+
+    # Figures in the outer margin to the LEFT of the question. On even pages
+    # the wide margin is on the left, and a question's diagram can sit there
+    # (the tangram beside question 16, the magic square beside 12). Only on
+    # single-column pages - in a two-column layout, "left" is another column.
+    left = None
+    # Text wholly left of the question number is never part of it - a stray
+    # letter from a sidebar or the margin. Paint it out of the crop.
+    # x_from is 20pt left of the question number, so "ends before the number
+    # starts" is x_from + 17.
+    margin_text = [r for r, t, k in all_items
+                   if k == "text" and t and r.x1 <= x_from + 17
+                   and top - RISE <= r.y0 < end]
+    if single_column:
+        question_text = " ".join(t for r, t, k in all_items
+                                 if k == "text" and x_from <= r.x0 < x_to and top - 2 <= r.y0 < end)
+        refers_to_picture = bool(VISUAL_CUE.search(question_text))
+        left_figs = [r for r, t, k in all_items
+                     # drawings always (tangram, magic square); a photo only
+                     # when the question points at it ("the small board shown")
+                     if (k == "figure" or (k == "image" and refers_to_picture and is_figure(r)))
+                     and r.x1 <= x_from + 5 and r.x0 > rect.x0 + 30
+                     and top - RISE <= r.y0 < end
+                     and (next_top is None or r.y0 < next_top - 12)
+                     and not under_banner(r) and not is_tab(r)]
+        if left_figs:
+            items += [(r, "", "figure") for r in left_figs]
+            left = min(r.x0 for r in left_figs)
+            # ...except a margin figure's own labels (the tangram's A-G)
+            margin_text = [r for r in margin_text
+                           if not any(r.intersects(fg + (-4, -4, 4, 4)) for fg in left_figs)]
+
     items.sort(key=lambda item: item[0].y0)
     if not items:
-        return top, end, x_to
+        return top, end, x_to, headings, None
 
-    upper = min(r.y0 for r, _ in items if r.y0 < top + 12)
+    upper = min((r.y0 for r, _, _ in items if r.y0 < top + 12), default=top)
     bottom, right = items[0][0].y1, items[0][0].x1
-    for r, text in items[1:]:
+    for r, text, _ in items[1:]:
         # A section heading ("Extend", "Connect and Apply") ends the question
         # even when it sits close enough not to leave a gap.
-        flat = " ".join(text.split())
-        if flat and any(flat.startswith(h) for h in SECTION_HEADINGS if h != "Questions"):
+        if is_heading(text):
             break
         if r.y0 - bottom > CONTENT_GAP:
             break
         bottom = max(bottom, r.y1)
         right = max(right, r.x1)
-    return upper, bottom, right
+    return upper, bottom, right, headings + margin_text, left
+
+
+def body_font(page):
+    """
+    The font the page's running text is set in: whichever font carries the
+    most characters. Measured rather than named, so another book with a
+    different typeface works without changes.
+    """
+    counts = {}
+    for block in page.get_text("dict")["blocks"]:
+        for line in block.get("lines", []):
+            for span in line["spans"]:
+                family = span["font"].split("-")[0]
+                counts[family] = counts.get(family, 0) + len(span["text"].strip())
+    return max(counts, key=counts.get) if counts else ""
+
+
+def body_right_edge(page, indent, column_right):
+    """
+    Where the question text wraps on this page.
+
+    Sidebars - glossary definitions, "Literacy Connections", the
+    problem-solving tabs - sit in the margin to the right of that line. Only
+    lines in the body font that start at the question indent are measured, so
+    a sidebar cannot widen its own boundary.
+    """
+    family = body_font(page)
+    rights = []
+    for block in page.get_text("dict")["blocks"]:
+        for line in block.get("lines", []):
+            x0, _, x1, _ = line["bbox"]
+            if not (indent - 6 <= x0 <= indent + 45):
+                continue
+            if any(sp["font"].startswith(family) for sp in line["spans"]):
+                rights.append(x1)
+    return min(max(rights), column_right + 30) if rights else column_right
+
+
+def drawing_clusters(rects, touch=3):
+    """
+    Group drawings that touch into one rectangle each.
+
+    A sudoku is dozens of thin lines and small cells; a tangram is seven
+    separate pieces. None of them is figure-sized alone, so judged one at a
+    time the diagram looks like decoration and gets dropped. Judged as a
+    group, it is plainly a figure.
+    """
+    groups = [fitz.Rect(r) for r in rects]
+    merged = True
+    while merged:
+        merged = False
+        out = []
+        while groups:
+            g = groups.pop()
+            i = 0
+            while i < len(groups):
+                if g.intersects(groups[i] + (-touch, -touch, touch, touch)):
+                    g |= groups.pop(i)
+                    merged = True
+                else:
+                    i += 1
+            out.append(g)
+        groups = out
+    return groups
+
+
+def is_tab(rect):
+    """
+    The problem-solving step tabs ("Understand the Problem", "Choose a
+    Strategy", "Reflect"). Their lettering is drawn as shapes, not text, so it
+    cannot be matched by wording - but they are unmistakably ribbon-shaped:
+    short and very wide. Only used for things in the margins; a number line in
+    the body is also flat and must stay.
+    """
+    return rect.height < 26 and rect.width > 3 * rect.height
+
+
+def is_figure(rect):
+    """Big enough to be a diagram, not a highlight box or a tab banner."""
+    return rect.width * rect.height >= 2500 and min(rect.width, rect.height) >= 30
 
 
 def content_floor(page):
@@ -202,7 +449,7 @@ def content_floor(page):
     rect = page.rect
     footer_tops = [l[1] for l in lines_of(page)
                    if l[1] > rect.height - 70 and "MHR" in l[4]]
-    return (min(footer_tops) - 3) if footer_tops else rect.height - 30
+    return (min(footer_tops) - 1) if footer_tops else rect.height - 30
 
 
 def default_section(title):
@@ -259,11 +506,9 @@ def crop_questions(doc, book, lesson, out_dir, rel_dir):
         # numbering it belongs to.
         heading_positions = []
         for _, y0, _, _, text in body:
-            flat = " ".join(text.split())
-            for name in SECTION_HEADINGS:
-                if flat.startswith(name):
-                    heading_positions.append((y0, name))
-                    break
+            name = section_heading_name(text)
+            if name:
+                heading_positions.append((y0, name))
 
         def section_at(y):
             current = carried["section"]
@@ -282,6 +527,7 @@ def crop_questions(doc, book, lesson, out_dir, rel_dir):
             # layout shifts between odd and even pages.
             indent = min(l[0] for l, _ in in_column)
             starts = [(m.group(1), l[1], l[0]) for l, m in in_column if l[0] <= indent + 12]
+            body_right = body_right_edge(page, indent, column.x1)
             starts.sort(key=lambda s: s[1])
 
             for i, (number, top, x0) in enumerate(starts):
@@ -294,11 +540,18 @@ def crop_questions(doc, book, lesson, out_dir, rel_dir):
                 # sidebar sits below it.
                 # Only content that STARTS in this column counts; a line may
                 # still run past the gutter, which sets the right edge.
-                content_top, content_bottom, content_right = content_extent(
-                    page, x0 - 20, column.x1, top, end)
-                clip = fitz.Rect(max(rect.x0, x0 - 18), min(top - 8, content_top - 3),
+                content_top, content_bottom, content_right, headings, content_left = content_extent(
+                    page, x0 - 20, column.x1, top, end, body_right,
+                    next_top=starts[i + 1][1] if i + 1 < len(starts) else None,
+                    single_column=len(columns) == 1)
+                # Stop 2pt above the next question, but don't shave anything
+                # off the page floor: the last line can sit right on it.
+                limit = end - 2 if i + 1 < len(starts) else end
+                crop_top = min(top - 8, content_top - 3)
+                crop_left = x0 - 18 if content_left is None else min(x0 - 18, content_left - 6)
+                clip = fitz.Rect(max(rect.x0, crop_left), crop_top,
                                  min(rect.x1 - 4, content_right + 10),
-                                 min(end - 4, content_bottom + 8))
+                                 min(limit, content_bottom + 6))
                 if clip.height < 12:
                     continue
 
@@ -306,7 +559,9 @@ def crop_questions(doc, book, lesson, out_dir, rel_dir):
                 slug = re.sub(r'[^a-z0-9]+', '-', section.lower()).strip('-')
                 # Two Investigate runs in one lesson both have a question 1, so
                 # the name carries the page and, if needed, a counter.
-                base = f"{lesson_id}-{slug}-p{book_page}-q{number}"
+                # lesson - book page - question - section. Zero-padded so the
+                # folder lists in reading order (p004 before p010, q2 before q10).
+                base = f"{lesson_id}-p{book_page:03d}-q{int(number):02d}-{slug}"
                 name = f"{base}{IMAGE_EXT}"
                 n = 2
                 while name in used:
@@ -314,7 +569,8 @@ def crop_questions(doc, book, lesson, out_dir, rel_dir):
                     n += 1
                 used.add(name)
 
-                save(page.get_pixmap(dpi=DPI_CROP, clip=clip), out_dir / name)
+                save(page.get_pixmap(dpi=DPI_CROP, clip=clip), out_dir / name,
+                     clip=clip, blank=headings)
                 found.setdefault((section, number), []).append(f"{rel_dir}/{name}")
                 AUDIT.append((lesson_id, name, index, clip, column.x0, column.x1, end))
 
@@ -467,7 +723,7 @@ def crop_answers(doc, book, lesson, segments, out_dir, rel_dir, all_ids):
         if clip.height < 10:
             continue
 
-        name = f"{lesson_id}-a{number}{IMAGE_EXT}"
+        name = f"{lesson_id}-a{int(number):02d}{IMAGE_EXT}"
         save(doc[index].get_pixmap(dpi=DPI_CROP, clip=clip), out_dir / name)
         found.setdefault(number, []).append(f"{rel_dir}/{name}")
 
@@ -505,7 +761,7 @@ def run(book_id, chapter):
         for book_page in range(first_page, last_page + 1):
             index = book_page + book["page_offset"] - 1
             if 0 <= index < doc.page_count:
-                name = f"p{index + 1}{IMAGE_EXT}"
+                name = f"p{book_page:03d}{IMAGE_EXT}"
                 target = p_dir / name
                 if not target.exists():
                     save(doc[index].get_pixmap(dpi=DPI_PAGE), target)

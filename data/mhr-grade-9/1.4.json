@@ -9,17 +9,17 @@
     22
   ],
   "pageImages": [
-    "assets/books/mhr-grade-9/pages/p31.webp",
-    "assets/books/mhr-grade-9/pages/p32.webp",
-    "assets/books/mhr-grade-9/pages/p33.webp",
-    "assets/books/mhr-grade-9/pages/p34.webp"
+    "assets/books/mhr-grade-9/pages/p019.webp",
+    "assets/books/mhr-grade-9/pages/p020.webp",
+    "assets/books/mhr-grade-9/pages/p021.webp",
+    "assets/books/mhr-grade-9/pages/p022.webp"
   ],
   "items": [
     {
       "section": "Investigate",
       "number": "1",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.4-investigate-p19-q1.webp"
+        "assets/books/mhr-grade-9/questions/1.4-p019-q01-investigate.webp"
       ],
       "answerImages": [],
       "hasAnswerKey": false
@@ -28,7 +28,7 @@
       "section": "Investigate",
       "number": "2",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.4-investigate-p19-q2.webp"
+        "assets/books/mhr-grade-9/questions/1.4-p019-q02-investigate.webp"
       ],
       "answerImages": [],
       "hasAnswerKey": false
@@ -37,7 +37,7 @@
       "section": "Investigate",
       "number": "3",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.4-investigate-p19-q3.webp"
+        "assets/books/mhr-grade-9/questions/1.4-p019-q03-investigate.webp"
       ],
       "answerImages": [],
       "hasAnswerKey": false
@@ -46,7 +46,7 @@
       "section": "Investigate",
       "number": "4",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.4-investigate-p19-q4.webp"
+        "assets/books/mhr-grade-9/questions/1.4-p019-q04-investigate.webp"
       ],
       "answerImages": [],
       "hasAnswerKey": false
@@ -55,10 +55,10 @@
       "section": "Practise",
       "number": "1",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.4-practise-p21-q1.webp"
+        "assets/books/mhr-grade-9/questions/1.4-p021-q01-practise.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.4-a1.webp"
+        "assets/books/mhr-grade-9/answers/1.4-a01.webp"
       ],
       "hasAnswerKey": true
     },
@@ -66,10 +66,10 @@
       "section": "Practise",
       "number": "2",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.4-practise-p21-q2.webp"
+        "assets/books/mhr-grade-9/questions/1.4-p021-q02-practise.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.4-a2.webp"
+        "assets/books/mhr-grade-9/answers/1.4-a02.webp"
       ],
       "hasAnswerKey": true
     },
@@ -77,10 +77,10 @@
       "section": "Practise",
       "number": "3",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.4-practise-p21-q3.webp"
+        "assets/books/mhr-grade-9/questions/1.4-p021-q03-practise.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.4-a3.webp"
+        "assets/books/mhr-grade-9/answers/1.4-a03.webp"
       ],
       "hasAnswerKey": true
     },
@@ -88,10 +88,10 @@
       "section": "Practise",
       "number": "4",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.4-practise-p21-q4.webp"
+        "assets/books/mhr-grade-9/questions/1.4-p021-q04-practise.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.4-a4.webp"
+        "assets/books/mhr-grade-9/answers/1.4-a04.webp"
       ],
       "hasAnswerKey": true
     },
@@ -99,10 +99,10 @@
       "section": "Connect and Apply",
       "number": "5",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.4-connect-and-apply-p21-q5.webp"
+        "assets/books/mhr-grade-9/questions/1.4-p021-q05-connect-and-apply.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.4-a5.webp"
+        "assets/books/mhr-grade-9/answers/1.4-a05.webp"
       ],
       "hasAnswerKey": true
     },
@@ -110,10 +110,10 @@
       "section": "Connect and Apply",
       "number": "6",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.4-connect-and-apply-p21-q6.webp"
+        "assets/books/mhr-grade-9/questions/1.4-p021-q06-connect-and-apply.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.4-a6.webp"
+        "assets/books/mhr-grade-9/answers/1.4-a06.webp"
       ],
       "hasAnswerKey": true
     },
@@ -121,10 +121,10 @@
       "section": "Connect and Apply",
       "number": "7",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.4-connect-and-apply-p22-q7.webp"
+        "assets/books/mhr-grade-9/questions/1.4-p022-q07-connect-and-apply.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.4-a7.webp"
+        "assets/books/mhr-grade-9/answers/1.4-a07.webp"
       ],
       "hasAnswerKey": true
     },
@@ -132,10 +132,10 @@
       "section": "Connect and Apply",
       "number": "8",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.4-connect-and-apply-p22-q8.webp"
+        "assets/books/mhr-grade-9/questions/1.4-p022-q08-connect-and-apply.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.4-a8.webp"
+        "assets/books/mhr-grade-9/answers/1.4-a08.webp"
       ],
       "hasAnswerKey": true
     },
@@ -143,10 +143,10 @@
       "section": "Extend",
       "number": "9",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.4-extend-p22-q9.webp"
+        "assets/books/mhr-grade-9/questions/1.4-p022-q09-extend.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.4-a9.webp"
+        "assets/books/mhr-grade-9/answers/1.4-a09.webp"
       ],
       "hasAnswerKey": true
     },
@@ -154,7 +154,7 @@
       "section": "Extend",
       "number": "10",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.4-extend-p22-q10.webp"
+        "assets/books/mhr-grade-9/questions/1.4-p022-q10-extend.webp"
       ],
       "answerImages": [
         "assets/books/mhr-grade-9/answers/1.4-a10.webp"

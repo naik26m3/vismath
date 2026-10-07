@@ -9,19 +9,19 @@
     39
   ],
   "pageImages": [
-    "assets/books/mhr-grade-9/pages/p49.webp",
-    "assets/books/mhr-grade-9/pages/p50.webp",
-    "assets/books/mhr-grade-9/pages/p51.webp"
+    "assets/books/mhr-grade-9/pages/p037.webp",
+    "assets/books/mhr-grade-9/pages/p038.webp",
+    "assets/books/mhr-grade-9/pages/p039.webp"
   ],
   "items": [
     {
       "section": "Questions",
       "number": "1",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.R-questions-p37-q1.webp"
+        "assets/books/mhr-grade-9/questions/1.R-p037-q01-questions.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.R-a1.webp"
+        "assets/books/mhr-grade-9/answers/1.R-a01.webp"
       ],
       "hasAnswerKey": true
     },
@@ -29,10 +29,10 @@
       "section": "Questions",
       "number": "2",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.R-questions-p37-q2.webp"
+        "assets/books/mhr-grade-9/questions/1.R-p037-q02-questions.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.R-a2.webp"
+        "assets/books/mhr-grade-9/answers/1.R-a02.webp"
       ],
       "hasAnswerKey": true
     },
@@ -40,10 +40,10 @@
       "section": "Questions",
       "number": "3",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.R-questions-p37-q3.webp"
+        "assets/books/mhr-grade-9/questions/1.R-p037-q03-questions.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.R-a3.webp"
+        "assets/books/mhr-grade-9/answers/1.R-a03.webp"
       ],
       "hasAnswerKey": true
     },
@@ -51,10 +51,10 @@
       "section": "Questions",
       "number": "4",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.R-questions-p37-q4.webp"
+        "assets/books/mhr-grade-9/questions/1.R-p037-q04-questions.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.R-a4.webp"
+        "assets/books/mhr-grade-9/answers/1.R-a04.webp"
       ],
       "hasAnswerKey": true
     },
@@ -62,10 +62,10 @@
       "section": "Questions",
       "number": "5",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.R-questions-p37-q5.webp"
+        "assets/books/mhr-grade-9/questions/1.R-p037-q05-questions.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.R-a5.webp"
+        "assets/books/mhr-grade-9/answers/1.R-a05.webp"
       ],
       "hasAnswerKey": true
     },
@@ -73,10 +73,10 @@
       "section": "Questions",
       "number": "6",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.R-questions-p37-q6.webp"
+        "assets/books/mhr-grade-9/questions/1.R-p037-q06-questions.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.R-a6.webp"
+        "assets/books/mhr-grade-9/answers/1.R-a06.webp"
       ],
       "hasAnswerKey": true
     },
@@ -84,10 +84,10 @@
       "section": "Questions",
       "number": "7",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.R-questions-p37-q7.webp"
+        "assets/books/mhr-grade-9/questions/1.R-p037-q07-questions.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.R-a7.webp"
+        "assets/books/mhr-grade-9/answers/1.R-a07.webp"
       ],
       "hasAnswerKey": true
     },
@@ -95,10 +95,10 @@
       "section": "Questions",
       "number": "8",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.R-questions-p37-q8.webp"
+        "assets/books/mhr-grade-9/questions/1.R-p037-q08-questions.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.R-a8.webp"
+        "assets/books/mhr-grade-9/answers/1.R-a08.webp"
       ],
       "hasAnswerKey": true
     },
@@ -106,10 +106,10 @@
       "section": "Questions",
       "number": "9",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.R-questions-p37-q9.webp"
+        "assets/books/mhr-grade-9/questions/1.R-p037-q09-questions.webp"
       ],
       "answerImages": [
-        "assets/books/mhr-grade-9/answers/1.R-a9.webp"
+        "assets/books/mhr-grade-9/answers/1.R-a09.webp"
       ],
       "hasAnswerKey": true
     },
@@ -117,7 +117,7 @@
       "section": "Questions",
       "number": "10",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.R-questions-p37-q10.webp"
+        "assets/books/mhr-grade-9/questions/1.R-p037-q10-questions.webp"
       ],
       "answerImages": [
         "assets/books/mhr-grade-9/answers/1.R-a10.webp"
@@ -128,7 +128,7 @@
       "section": "Questions",
       "number": "11",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.R-questions-p37-q11.webp"
+        "assets/books/mhr-grade-9/questions/1.R-p037-q11-questions.webp"
       ],
       "answerImages": [
         "assets/books/mhr-grade-9/answers/1.R-a11.webp"
@@ -139,7 +139,7 @@
       "section": "Questions",
       "number": "12",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.R-questions-p37-q12.webp"
+        "assets/books/mhr-grade-9/questions/1.R-p037-q12-questions.webp"
       ],
       "answerImages": [
         "assets/books/mhr-grade-9/answers/1.R-a12.webp"
@@ -150,7 +150,7 @@
       "section": "Questions",
       "number": "13",
       "questionImages": [
-        "assets/books/mhr-grade-9/questions/1.R-questions-p37-q13.webp"
+        "assets/books/mhr-grade-9/questions/1.R-p037-q13-questions.webp"
       ],
       "answerImages": [
         "assets/books/mhr-grade-9/answers/1.R-a13.webp"
