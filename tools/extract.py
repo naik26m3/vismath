@@ -76,6 +76,7 @@ def save(pixmap, path):
 # The headings that start a new run of question numbers. The book restarts at 1
 # under each of these, so a question is only identified by section + number.
 SECTION_HEADINGS = [
+    "Questions",            # not a printed heading - see default_section()
     "Investigate A", "Investigate B", "Investigate",
     "Communicate Your Understanding",
     "Practise", "Connect and Apply", "Extend",
@@ -87,6 +88,7 @@ SECTION_HEADINGS = [
 # across these headings (Practise 1-4, Connect and Apply 5-9, Extend 10-11).
 # Investigate restarts at 1 and has no entry in the key.
 EXERCISE_SECTIONS = {
+    "Questions",
     "Practise", "Connect and Apply", "Extend",
     "Achievement Check", "Chapter Problem", "Chapter Problem Wrap-Up",
     "Math Contest",
@@ -94,7 +96,7 @@ EXERCISE_SECTIONS = {
 
 # A question starts with "N." near the left edge of its column. Parts a) b) c)
 # are indented further, so the x position is what tells them apart.
-QUESTION_RE = re.compile(r'^(\d+)\.')
+QUESTION_RE = re.compile(r'^(\d+)\.(?!\d)')
 
 
 def blocks_of(page, clip=None):
@@ -122,14 +124,38 @@ def question_starts(blocks, left_edge, indent_tolerance=14):
 # Questions: lesson pages, single column
 # --------------------------------------------------------------------------
 
+def lines_of(page):
+    """Text lines, top to bottom, as (x0, y0, x1, y1, text)."""
+    out = []
+    for block in page.get_text("dict")["blocks"]:
+        for line in block.get("lines", []):
+            text = "".join(span["text"] for span in line["spans"]).strip()
+            if text:
+                out.append((*line["bbox"], text))
+    out.sort(key=lambda l: (round(l[1], 1), l[0]))
+    return out
+
+
+def default_section(title):
+    """
+    The section a question belongs to before any heading has been seen.
+    Get Ready, Chapter Review and Chapter Test print no headings at all and are
+    nothing but exercises; ordinary lessons open with Investigate.
+    """
+    if re.search(r'Get Ready|Review|Test', title, re.I):
+        return "Questions"
+    return "Investigate"
+
+
 def crop_questions(doc, book, lesson, out_dir, rel_dir):
     """Crop every numbered question on the lesson's pages."""
-    lesson_id, _, first_page, last_page = lesson
+    lesson_id, title, first_page, last_page = lesson
     offset = book["page_offset"]
     found = {}
     # A section can run over a page break, so the last heading seen carries
     # forward to the top of the next page.
-    carried = {"section": "Investigate"}
+    carried = {"section": default_section(title)}
+    used = set()
 
     for book_page in range(first_page, last_page + 1):
         index = book_page + offset - 1
@@ -137,26 +163,33 @@ def crop_questions(doc, book, lesson, out_dir, rel_dir):
             continue
         page = doc[index]
         rect = page.rect
+        bottom_limit = rect.height - 45
 
-        blocks = blocks_of(page)
-        if not blocks:
-            continue
-
-        body = [b for b in blocks if b[1] > 40 and b[3] < rect.height - 40]
+        body = [l for l in lines_of(page) if 40 < l[1] < bottom_limit]
         if not body:
             continue
 
-        left_edge = min(b[0] for b in body)
-        starts = question_starts(body, left_edge)
-        if not starts:
+        candidates = [(l, QUESTION_RE.match(l[4])) for l in body]
+        candidates = [(l, m) for l, m in candidates if m]
+        if not candidates:
             continue
 
-        bottom_limit = rect.height - 45
+        # Get Ready, Chapter Review and Chapter Test are laid out in two
+        # columns, like the answers. If the question numbers sit at two very
+        # different x positions, split the page at its gutter and treat each
+        # half as its own column.
+        xs = [l[0] for l, _ in candidates]
+        if max(xs) - min(xs) > rect.width * 0.3:
+            middle = column_split(page)
+            columns = [fitz.Rect(rect.x0, 0, middle, rect.y1),
+                       fitz.Rect(middle, 0, rect.x1, rect.y1)]
+        else:
+            columns = [fitz.Rect(rect.x0, 0, rect.x1, rect.y1)]
 
-        # Where each section heading sits, so a question can be told which run
-        # of numbering it belongs to.
+        # Where each section heading sits, so a question knows which run of
+        # numbering it belongs to.
         heading_positions = []
-        for x0, y0, _, _, text in body:
+        for _, y0, _, _, text in body:
             flat = " ".join(text.split())
             for name in SECTION_HEADINGS:
                 if flat.startswith(name):
@@ -170,22 +203,40 @@ def crop_questions(doc, book, lesson, out_dir, rel_dir):
                     current = name
             return current
 
-        for i, (number, top, _) in enumerate(starts):
-            end = starts[i + 1][1] if i + 1 < len(starts) else bottom_limit
-            clip = fitz.Rect(max(rect.x0, left_edge - 18), top - 8,
-                             rect.x1 - 30, min(end - 4, bottom_limit))
-            if clip.height < 12:
+        for column in columns:
+            in_column = [(l, m) for l, m in candidates if column.x0 <= l[0] < column.x1]
+            if not in_column:
                 continue
 
-            # Numbering restarts within a lesson (Investigate has a 1, 2, 3 and
-            # so does Practise), so the page has to be in the name or the second
-            # question 1 overwrites the first.
-            section = section_at(top)
-            slug = re.sub(r'[^a-z0-9]+', '-', section.lower()).strip('-')
-            name = f"{lesson_id}-{slug}-q{number}{IMAGE_EXT}"
-            save(page.get_pixmap(dpi=DPI_CROP, clip=clip), out_dir / name)
+            # The indent is measured from the question numbers, not from the
+            # leftmost text: sidebars and margin notes sit further left, and the
+            # layout shifts between odd and even pages.
+            indent = min(l[0] for l, _ in in_column)
+            starts = [(m.group(1), l[1], l[0]) for l, m in in_column if l[0] <= indent + 12]
+            starts.sort(key=lambda s: s[1])
 
-            found.setdefault((section, number), []).append(f"{rel_dir}/{name}")
+            for i, (number, top, x0) in enumerate(starts):
+                end = starts[i + 1][1] if i + 1 < len(starts) else bottom_limit
+                right = column.x1 - (8 if len(columns) > 1 else 30)
+                clip = fitz.Rect(max(column.x0, x0 - 18), top - 8,
+                                 right, min(end - 4, bottom_limit))
+                if clip.height < 12:
+                    continue
+
+                section = section_at(top)
+                slug = re.sub(r'[^a-z0-9]+', '-', section.lower()).strip('-')
+                # Two Investigate runs in one lesson both have a question 1, so
+                # the name carries the page and, if needed, a counter.
+                base = f"{lesson_id}-{slug}-p{book_page}-q{number}"
+                name = f"{base}{IMAGE_EXT}"
+                n = 2
+                while name in used:
+                    name = f"{base}-{n}{IMAGE_EXT}"
+                    n += 1
+                used.add(name)
+
+                save(page.get_pixmap(dpi=DPI_CROP, clip=clip), out_dir / name)
+                found.setdefault((section, number), []).append(f"{rel_dir}/{name}")
 
         if heading_positions:
             carried["section"] = heading_positions[-1][1]
