@@ -39,7 +39,7 @@ BOOKS = {
         "pdf": "books/MHR+GRADE+9.pdf",
         "page_offset": 12,
         "answers_from": 541,
-        "answers_to": 600,
+        "answers_to": 585,          # p586 onward is the Glossary, then Index
         "chapters": {
             "1": [
                 # id,     title,                                           book pages
@@ -232,27 +232,37 @@ ANSWER_INDENT = 95
 
 def column_split(page):
     """
-    Where the gutter between the two answer columns actually is.
+    Where the gutter between the two answer columns is, on this page.
 
-    The page midpoint is not good enough: on some pages the right column starts
-    a few points left of centre, so its lines get filed under the left column
-    and a heading turns up in the middle of another lesson's answers. Instead,
-    find the widest horizontal gap between line starts near the middle.
+    It moves from page to page, so it has to be measured. The gutter is the one
+    vertical strip that no line of text crosses: scan across the middle of the
+    page, count how many lines span each x, and take the centre of the longest
+    run where that count is lowest (zero, on a normal page).
     """
     rect = page.rect
-    xs = sorted({round(line["bbox"][0])
-                 for block in page.get_text("dict")["blocks"]
-                 for line in block.get("lines", [])})
-    # Keep the search close to the middle; a wide band finds gaps inside
-    # tables and diagrams instead of the gutter.
-    low, high = rect.x0 + rect.width * 0.44, rect.x0 + rect.width * 0.58
+    top, bottom = rect.y0 + 50, rect.y1 - 50          # ignore header / footer
+    spans = [(line["bbox"][0], line["bbox"][2])
+             for block in page.get_text("dict")["blocks"]
+             for line in block.get("lines", [])
+             if top < line["bbox"][1] < bottom]
 
-    best_gap, best_x = 0, (rect.x0 + rect.x1) / 2
-    for a, b in zip(xs, xs[1:]):
-        if low <= b <= high and (b - a) > best_gap:
-            best_gap, best_x = b - a, a + (b - a) / 2
+    low = int(rect.x0 + rect.width * 0.30)
+    high = int(rect.x0 + rect.width * 0.70)
+    counts = [sum(1 for x0, x1 in spans if x0 < x < x1) for x in range(low, high)]
+    if not counts:
+        return (rect.x0 + rect.x1) / 2
 
-    return best_x if best_gap > 15 else (rect.x0 + rect.x1) / 2
+    fewest = min(counts)
+    best_start, best_len, run_start = low, 0, None
+    for i, c in enumerate(counts + [fewest + 1]):        # sentinel ends last run
+        if c == fewest and run_start is None:
+            run_start = i
+        elif c != fewest and run_start is not None:
+            if i - run_start > best_len:
+                best_start, best_len = run_start, i - run_start
+            run_start = None
+
+    return low + best_start + best_len / 2
 
 
 def crop_answers(doc, book, lesson, segments, out_dir, rel_dir, all_ids):
