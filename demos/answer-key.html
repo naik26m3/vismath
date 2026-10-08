@@ -5,319 +5,369 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light">
-  <title>Answer Key</title>
+  <title>Andswer Key</title>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <!-- The lesson data, bundled by tools/demo_data.py so this opens by double-click. -->
+  <script src="answer-key-data.js"></script>
 </head>
 
-<body class="bg-stone-100 text-slate-800 h-dvh flex flex-col overflow-hidden">
+<body class="bg-stone-100 text-slate-800 h-dvh flex flex-col overflow-hidden select-none">
 
-  <!-- top bar: section + question picker -->
-  <header class="shrink-0 px-4 py-3 flex flex-wrap items-center gap-3 bg-white border-b border-slate-200">
-    <select id="section" class="rounded-xl border border-slate-300 bg-white px-3 h-11 text-base"></select>
-    <div id="questions" class="flex flex-wrap gap-2"></div>
+  <!-- top bar -->
+  <header class="shrink-0 bg-white border-b border-slate-200 px-3 py-2 flex items-center gap-3">
+    <select id="lesson"
+      class="min-w-0 flex-1 landscape:flex-none landscape:w-72 rounded-xl border border-slate-300 bg-white px-3 h-12 text-base font-medium"></select>
+
+    <!-- the two modes -->
+    <div class="shrink-0 inline-flex rounded-xl border border-slate-300 bg-white p-1">
+      <button id="modeQuestions" class="rounded-lg px-3 h-10 text-sm font-medium">Questions</button>
+      <button id="modePages" class="rounded-lg px-3 h-10 text-sm font-medium">Pages</button>
+    </div>
+
+    <div class="ml-auto flex items-center gap-2">
+      <button id="prev" aria-label="Previous"
+        class="rounded-xl border border-slate-300 bg-white active:bg-slate-100 w-14 h-12 text-xl">&larr;</button>
+      <p id="position" class="w-16 text-center text-sm font-semibold tabular-nums text-slate-600"></p>
+      <button id="next" aria-label="Next"
+        class="rounded-xl bg-sky-600 active:bg-sky-700 text-white w-14 h-12 text-xl">&rarr;</button>
+    </div>
   </header>
 
-  <!-- the two panes -->
   <main class="flex-1 min-h-0 flex flex-col landscape:flex-row gap-3 p-3">
 
-    <!-- QUESTION -->
-    <section id="questionPane" class="flex-1 min-h-0 min-w-0 flex flex-col rounded-2xl bg-white border border-slate-200 shadow-sm">
-      <div class="shrink-0 flex items-center justify-between px-4 py-2 border-b border-slate-200">
-        <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Question</h2>
-        <div class="flex gap-2">
-          <button data-page-toggle="question"
-            class="rounded-lg border border-slate-300 hover:bg-slate-100 px-3 h-9 text-sm font-medium">Page</button>
-          <button data-expand="question"
-            class="rounded-lg border border-slate-300 hover:bg-slate-100 px-3 h-9 text-sm font-medium">Full</button>
+    <!-- question picker (Questions mode only): a strip in portrait, a rail in landscape -->
+    <nav id="rail"
+      class="shrink-0 flex landscape:flex-col gap-4 overflow-auto rounded-2xl bg-white border border-slate-200 p-3
+             landscape:w-44"></nav>
+
+    <!-- QUESTION side -->
+    <section id="questionPane"
+      class="flex-1 min-h-0 min-w-0 flex flex-col rounded-2xl bg-white border border-slate-200 shadow-sm">
+      <div class="shrink-0 flex items-center gap-2 px-4 h-12 border-b border-slate-200">
+        <h2 id="questionTitle" class="text-sm font-semibold text-slate-900 truncate"></h2>
+        <div class="ml-auto flex gap-2">
+          <button id="pageBtn" class="rounded-lg border border-slate-300 px-3 h-9 text-sm font-medium">Whole page</button>
+          <button id="wideQuestion" class="rounded-lg border border-slate-300 px-3 h-9 text-sm font-medium">Wide</button>
         </div>
       </div>
-      <div id="questionBody" class="flex-1 min-h-0 overflow-auto p-4"></div>
+      <div id="questionBody" class="flex-1 min-h-0 overflow-auto p-4 flex flex-col gap-3"></div>
     </section>
 
-    <!-- ANSWER -->
-    <section id="answerPane" class="flex-1 min-h-0 min-w-0 flex flex-col rounded-2xl bg-white border border-slate-200 shadow-sm">
-      <div class="shrink-0 flex items-center justify-between px-4 py-2 border-b border-slate-200">
-        <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Answer</h2>
-        <div class="flex gap-2">
-          <button id="askAi"
-            class="rounded-lg bg-sky-600 hover:bg-sky-700 text-white px-3 h-9 text-sm font-medium">Ask AI</button>
-          <button data-page-toggle="answer"
-            class="rounded-lg border border-slate-300 hover:bg-slate-100 px-3 h-9 text-sm font-medium">Page</button>
-          <button data-expand="answer"
-            class="rounded-lg border border-slate-300 hover:bg-slate-100 px-3 h-9 text-sm font-medium">Full</button>
+    <!-- ANSWER side -->
+    <section id="answerPane"
+      class="flex-1 min-h-0 min-w-0 flex flex-col rounded-2xl bg-white border border-slate-200 shadow-sm">
+      <div class="shrink-0 flex items-center gap-2 px-4 h-12 border-b border-slate-200">
+        <h2 id="answerTitle" class="text-sm font-semibold text-emerald-700 truncate">Answer</h2>
+        <div class="ml-auto flex gap-2">
+          <!-- only in Pages mode, and only when the answers span more than one page -->
+          <div id="answerPager" class="flex gap-2">
+            <button id="answerPrev" aria-label="Previous answer page"
+              class="rounded-lg border border-slate-300 w-10 h-9 text-base">&larr;</button>
+            <button id="answerNext" aria-label="Next answer page"
+              class="rounded-lg border border-slate-300 w-10 h-9 text-base">&rarr;</button>
+          </div>
+          <button id="hideBtn" class="rounded-lg border border-slate-300 px-3 h-9 text-sm font-medium">Hide</button>
+          <button id="wideAnswer" class="rounded-lg border border-slate-300 px-3 h-9 text-sm font-medium">Wide</button>
         </div>
       </div>
-      <div id="answerBody" class="flex-1 min-h-0 overflow-auto p-4"></div>
+      <div id="answerBody" class="flex-1 min-h-0 overflow-auto p-4 flex flex-col gap-3"></div>
     </section>
 
   </main>
 
   <script>
-    // ----------------------------------------------------------------
-    // Real data, hand-checked. MHR Grade 9, section 2.1.
-    // Questions: book p.45  (PDF page 57)
-    // Answers:   book p.542 (PDF page 546)
-    //
-    // Pages are pre-rendered PNGs (~300 KB each) rather than the 17 MB
-    // PDF, so a Fire HD loads one image instead of parsing a book.
-    // ----------------------------------------------------------------
-    const DATA = {
-      "2.1": {
-        label: "2.1 Hypotheses and Sources of Data",
-        items: {
-          "1": {
-            qCrops: ["crops/p57-q1.png"],
-            q: "State the opposite of each hypothesis.",
-            qPages: ["pages/p57.png"],
-            aPages: ["pages/p546.png"],
-            parts: {
-              "a": { q: "Most people's favourite number is 7.", a: "Most people's favourite number is not 7." },
-              "b": { q: "Adults spend more time listening to classical music than to rap.", a: "Adults do not spend more time listening to classical music than to rap. (Alternative: Adults spend either less time or as much time listening to classical music as they spend listening to rap.)" },
-              "c": { q: "In Ontario, more teenagers join soccer teams than hockey teams.", a: "In Ontario, the number of teenagers who join hockey teams is greater than or equal to the number who join soccer teams." },
-              "d": { q: "Chocolate is not the most popular flavour of ice cream.", a: "Chocolate is the most popular flavour of ice cream." }
-            }
-          },
-          "2": {
-            qCrops: ["crops/p57-q2.png"],
-            q: "State a hypothesis about a relationship between each pair of variables. Then, state the opposite of each hypothesis.",
-            qPages: ["pages/p57.png"],
-            aPages: ["pages/p546.png"],
-            varies: true,
-            parts: {
-              "a": { q: "a student's age and time spent doing homework", a: "Hypothesis: Time spent doing homework increases as a student's age increases. Opposite: Time spent doing homework does not increase as a student's age increases." },
-              "b": { q: "a mother's height and the height of her children", a: "Hypothesis: Children tend to grow to the same height as their mothers. Opposite: Children do not tend to grow to the same height as their mothers." },
-              "c": { q: "temperature and crime rates", a: "Hypothesis: As temperature increases, the crime rate also increases. Opposite: As temperature increases, the crime rate decreases or remains constant." },
-              "d": { q: "the cost of gasoline and the number of people using public transit", a: "Hypothesis: As the cost of gasoline increases, the number of people using public transit increases. Opposite: As the cost of gasoline increases, the number of people using public transit decreases or stays the same." }
-            }
-          },
-          "3": {
-            qCrops: ["crops/p57-q3.png"],
-            q: "Which of the following data are primary and which are secondary? Explain.",
-            qPages: ["pages/p57.png"],
-            aPages: ["pages/p546.png"],
-            parts: {
-              "a": { q: "An office manager hands out a questionnaire to see if employees want to work earlier hours during the summer.", a: "Primary; the office manager gathers the data." },
-              "b": { q: "A student finds data on Internet use in a report published by Statistics Canada.", a: "Secondary; the student uses data gathered by Statistics Canada." },
-              "c": { q: "A researcher collects information about how far people travel on public transit by talking to passengers on the buses.", a: "Primary; the researcher gathers the data." },
-              "d": { q: "A researcher downloads data about the length of rides taken on public transit from a transit authority's Web site.", a: "Secondary; the researcher uses data gathered by the transit authority." }
-            }
-          },
-          "4": {
-            qCrops: ["crops/p57-q4.png"],
-            q: "Identify each data source as primary or secondary. State one advantage of each source of data.",
-            qPages: ["pages/p57.png"],
-            aPages: ["pages/p546.png"],
-            note: "Answers about advantages will vary.",
-            parts: {
-              "a": { q: "A researcher interviewed 100 students about their study habits.", a: "Primary; data are up-to-date" },
-              "b": { q: "A sporting goods company searched on the Internet for data on how Canadians spend their leisure time.", a: "Secondary; Internet search is fast and easy" },
-              "c": { q: "A manufacturer surveyed 1000 recent customers about possible changes to a product.", a: "Primary; getting opinions from customers" },
-              "d": { q: "A student found advertisements in out-of-town newspapers at a library to check admission prices at theatres across the country.", a: "Primary; data are up-to-date" }
-            }
-          },
-          "5": {
-            qCrops: ["crops/p57-q5.png"],
-            q: "Connect and Apply",
-            qPages: ["pages/p57.png", "pages/p58.png"],
-            aPages: ["pages/p546.png", "pages/p547.png"],
-            varies: true,
-            parts: {
-              "a": { q: "Make a hypothesis about whether the students in your class prefer cats or dogs as pets.", a: "Most students in the class prefer dogs as pets." },
-              "b": { q: "Describe how you could test your hypothesis. Explain whether you would use primary or secondary data.", a: "Survey the class. Primary data are best since the population is small and secondary data may not be available." }
-            }
-          }
-        }
-      },
-      "9.2": {
-        label: "9.2 Perimeter and Area Relationships of a Rectangle",
-        items: {
-          "3": {
-            q: "Investigate B — this one runs across two pages.",
-            // a) and b) sit at the bottom of p.486; c) is at the top of p.487.
-            qCrops: ["crops/p490-q3.png", "crops/p491-q3cont.png"],
-            qPages: ["pages/p490.png", "pages/p491.png"],
-            aPages: [],
-            note: "Investigate questions have no entry in the answer key — the answer depends on the table the student filled in.",
-            parts: {
-              "a": { q: "What are the dimensions of the rectangle with maximum area?", a: "— not in the answer key" },
-              "b": { q: "Compare this result with your hypothesis.", a: "— not in the answer key" },
-              "c": { q: "Compare this result with the maximum area you found in Investigate A. Will the hedge allow Brandon to enclose more, less, or the same amount of area as before?", a: "— not in the answer key" }
-            }
-          }
-        }
-      }
-    };
+    const LESSONS = window.ANSWER_KEY_LESSONS || [];
+    const ROOT = "../";                       // image paths are relative to the project root
 
-    const sectionSelect = document.getElementById("section");
-    const questionsBox  = document.getElementById("questions");
-    const questionBody  = document.getElementById("questionBody");
-    const answerBody    = document.getElementById("answerBody");
-    const questionPane  = document.getElementById("questionPane");
-    const answerPane    = document.getElementById("answerPane");
+    const $ = (id) => document.getElementById(id);
+    const lessonSelect = $("lesson");
+    const rail = $("rail");
 
-    let current = null;                       // the question number, e.g. "3"
-    const showingPage = { question: false, answer: false };
+    let lesson = null;        // the lesson object on screen
+    let mode = "questions";   // "questions" | "pages"
+    let at = 0;               // Questions mode: index into lesson.items
+    let showPage = false;     // Questions mode: crop, or the whole book page
+    let qPage = 0;            // Pages mode: index into lesson.pageImages
+    let aPage = 0;            // Pages mode: index into lesson.answerPageImages
+    let answerHidden = false; // stays as you move around
+    let wide = null;          // "question" | "answer" | null
 
-    for (const key of Object.keys(DATA)) {
-      const option = document.createElement("option");
-      option.value = key;
-      option.textContent = DATA[key].label;
-      sectionSelect.appendChild(option);
+    // ---- remember where you were --------------------------------------
+    function remember() {
+      try {
+        localStorage.setItem("answer-key-demo",
+          JSON.stringify({ lesson: lesson.lesson, at, mode, qPage, aPage, answerHidden }));
+      } catch (e) {}
+    }
+    function recall() {
+      try { return JSON.parse(localStorage.getItem("answer-key-demo")) || {}; }
+      catch (e) { return {}; }
     }
 
-    function section() { return DATA[sectionSelect.value]; }
+    // ---- helpers --------------------------------------------------------
+    function images(paths, emptyText) {
+      const frag = document.createDocumentFragment();
+      if (!paths || paths.length === 0) {
+        const p = document.createElement("p");
+        p.className = "text-slate-400 text-center mt-10";
+        p.textContent = emptyText;
+        frag.appendChild(p);
+        return frag;
+      }
+      for (const path of paths) {
+        const img = document.createElement("img");
+        img.src = ROOT + path;
+        img.alt = "";
+        img.draggable = false;
+        img.className = "w-full max-w-3xl mx-auto";
+        frag.appendChild(img);
+      }
+      return frag;
+    }
 
-    function drawQuestionButtons() {
-      questionsBox.innerHTML = "";
-      for (const number of Object.keys(section().items)) {
+    // ".../pages/p008.webp" -> 8
+    function bookPageOf(path) {
+      const m = path.match(/p(\d+)\.webp$/);
+      return m ? Number(m[1]) : "?";
+    }
+
+    // "assets/.../questions/1.1-p008-q02-practise.webp" -> ".../pages/p008.webp"
+    function pagesFor(item) {
+      const seen = [];
+      for (const path of item.questionImages) {
+        const m = path.match(/-(p\d+)-q\d+/);
+        if (!m) continue;
+        const page = path.replace(/questions\/[^/]+$/, "pages/" + m[1] + ".webp");
+        if (!seen.includes(page)) seen.push(page);
+      }
+      return seen;
+    }
+
+    function toggleStyle(button, on, base) {
+      button.className = (base || "rounded-lg px-3 h-9 text-sm font-medium border ") +
+        (on ? "bg-slate-800 text-white border-slate-800" : "border-slate-300 bg-white");
+    }
+
+    function dim(button, off) {
+      button.disabled = off;
+      button.classList.toggle("opacity-40", off);
+    }
+
+    // ---- the rail of question numbers (Questions mode) -------------------
+    function drawRail() {
+      rail.innerHTML = "";
+      let group = null, grid = null;
+
+      lesson.items.forEach((item, index) => {
+        if (item.section !== group) {
+          group = item.section;
+          const block = document.createElement("div");
+          block.className = "shrink-0";
+
+          const label = document.createElement("p");
+          label.className = "text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2 whitespace-nowrap";
+          label.textContent = group;
+          block.appendChild(label);
+
+          grid = document.createElement("div");
+          // one row in portrait, three columns in landscape
+          grid.className = "grid grid-flow-col auto-cols-max gap-2 " +
+                           "landscape:grid-flow-row landscape:auto-cols-auto landscape:grid-cols-3";
+          block.appendChild(grid);
+          rail.appendChild(block);
+        }
+
         const button = document.createElement("button");
-        button.dataset.number = number;
-        button.textContent = number;
-        questionsBox.appendChild(button);
-        button.addEventListener("click", () => select(number));
-      }
-      select(Object.keys(section().items)[0]);
+        button.dataset.index = index;
+        button.textContent = item.number;
+        grid.appendChild(button);
+      });
     }
 
-    function paintButtons() {
-      for (const button of questionsBox.children) {
-        const on = button.dataset.number === current;
-        button.className = "rounded-lg px-4 h-11 min-w-11 font-medium tabular-nums border " +
+    function paintRail() {
+      for (const button of rail.querySelectorAll("button")) {
+        const index = Number(button.dataset.index);
+        const noAnswer = lesson.items[index].answerImages.length === 0;
+        const on = index === at;
+        button.className = "h-12 min-w-12 rounded-xl font-semibold tabular-nums border " +
           (on ? "bg-sky-600 text-white border-sky-600"
-              : "bg-white border-slate-300 hover:bg-slate-100");
+              : noAnswer ? "bg-white border-dashed border-slate-300 text-slate-400"
+                         : "bg-white border-slate-300 text-slate-700 active:bg-slate-100");
+        if (on) button.scrollIntoView({ block: "nearest", inline: "nearest" });
       }
     }
 
-    function select(number) {
-      current = number;
-      showingPage.question = false;
-      showingPage.answer = false;
-      paintButtons();
-      render();
+    // ---- drawing -----------------------------------------------------------
+    function fillAnswer(paths, emptyText) {
+      const a = $("answerBody");
+      a.innerHTML = "";
+      if (answerHidden) {
+        const reveal = document.createElement("button");
+        reveal.className = "m-auto rounded-2xl border-2 border-dashed border-slate-300 text-slate-500 px-8 py-6 text-lg";
+        reveal.textContent = "Tap to show the answers";
+        reveal.onclick = () => { answerHidden = false; render(); };
+        a.appendChild(reveal);
+      } else {
+        a.appendChild(images(paths, emptyText));
+      }
+      a.scrollTop = 0;
     }
 
-    function partList(item, which) {
-      const list = document.createElement("dl");
-      list.className = "flex flex-col gap-3";
+    function renderQuestions() {
+      const item = lesson.items[at];
 
-      for (const [letter, part] of Object.entries(item.parts)) {
-        const row = document.createElement("div");
-        row.className = "flex gap-3";
+      $("position").textContent = (at + 1) + " / " + lesson.items.length;
+      $("questionTitle").textContent = "Question " + item.number +
+        (item.section === "Questions" ? "" : " · " + item.section);
+      $("answerTitle").textContent = "Answer";
 
-        const tag = document.createElement("dt");
-        tag.className = "shrink-0 w-6 font-bold text-slate-400";
-        tag.textContent = letter + ")";
+      const q = $("questionBody");
+      q.innerHTML = "";
+      q.appendChild(images(showPage ? pagesFor(item) : item.questionImages, "No picture for this question."));
+      q.scrollTop = 0;
+      toggleStyle($("pageBtn"), showPage);
 
-        const value = document.createElement("dd");
-        value.className = which === "a" ? "text-slate-900 font-medium" : "text-slate-700";
-        value.textContent = part[which];
+      fillAnswer(item.answerImages, "The book prints no answer for this question.");
 
-        row.appendChild(tag);
-        row.appendChild(value);
-        list.appendChild(row);
-      }
-      return list;
+      dim($("prev"), at === 0);
+      dim($("next"), at === lesson.items.length - 1);
+      paintRail();
+    }
+
+    function renderPages() {
+      const qPages = lesson.pageImages;
+      const aPages = lesson.answerPageImages || [];
+      qPage = Math.max(0, Math.min(qPages.length - 1, qPage));
+      aPage = Math.max(0, Math.min(Math.max(aPages.length - 1, 0), aPage));
+
+      $("position").textContent = (qPage + 1) + " / " + qPages.length;
+      $("questionTitle").textContent = "Book page " + bookPageOf(qPages[qPage]);
+      $("answerTitle").textContent = aPages.length
+        ? "Answers · page " + bookPageOf(aPages[aPage]) +
+          (aPages.length > 1 ? "  (" + (aPage + 1) + " of " + aPages.length + ")" : "")
+        : "Answers";
+
+      const q = $("questionBody");
+      q.innerHTML = "";
+      q.appendChild(images([qPages[qPage]], "No page."));
+      q.scrollTop = 0;
+
+      fillAnswer(aPages.length ? [aPages[aPage]] : [], "No answer page for this lesson.");
+
+      dim($("prev"), qPage === 0);
+      dim($("next"), qPage === qPages.length - 1);
+      dim($("answerPrev"), aPage === 0);
+      dim($("answerNext"), aPage >= aPages.length - 1);
+      $("answerPager").classList.toggle("hidden", aPages.length < 2);
     }
 
     function render() {
-      const item = section().items[current];
+      const pages = mode === "pages";
 
-      // --- question side
-      questionBody.innerHTML = "";
-      if (showingPage.question) {
-        questionBody.appendChild(pageImages(item.qPages));
-      } else if (item.qCrops) {
-        // The question exactly as it appears in the book — cut straight out of
-        // the page, so diagrams and notation come along and nothing is retyped.
-        questionBody.appendChild(pageImages(item.qCrops));
-      } else {
-        const stem = document.createElement("p");
-        stem.className = "text-lg font-semibold text-slate-900 mb-4";
-        stem.textContent = current + ". " + item.q;
-        questionBody.appendChild(stem);
-        questionBody.appendChild(partList(item, "q"));
-      }
+      rail.classList.toggle("hidden", pages);
+      $("pageBtn").classList.toggle("hidden", pages);
+      $("answerPager").classList.toggle("hidden", !pages);
 
-      // --- answer side
-      answerBody.innerHTML = "";
-      if (showingPage.answer) {
-        answerBody.appendChild(pageImages(item.aPages));
-      } else {
-        if (item.varies || item.note) {
-          const note = document.createElement("p");
-          note.className = "text-sm text-amber-700 bg-amber-50 rounded-lg px-3 py-2 mb-4";
-          note.textContent = item.note || "Answers will vary. Examples:";
-          answerBody.appendChild(note);
-        }
-        answerBody.appendChild(partList(item, "a"));
-      }
+      const tab = "rounded-lg px-3 h-10 text-sm font-medium ";
+      $("modeQuestions").className = tab + (pages ? "text-slate-500" : "bg-sky-600 text-white");
+      $("modePages").className = tab + (pages ? "bg-sky-600 text-white" : "text-slate-500");
+
+      if (pages) renderPages(); else renderQuestions();
+
+      $("hideBtn").textContent = answerHidden ? "Show" : "Hide";
+      toggleStyle($("hideBtn"), answerHidden);
+      $("questionPane").classList.toggle("hidden", wide === "answer");
+      $("answerPane").classList.toggle("hidden", wide === "question");
+      toggleStyle($("wideQuestion"), wide === "question");
+      toggleStyle($("wideAnswer"), wide === "answer");
+
+      remember();
     }
 
-    // A question can run over two pages, so this takes a list and stacks them.
-    // The pane scrolls, so you read off the bottom of one page onto the next.
-    function pageImages(sources) {
-      const wrap = document.createElement("div");
-      wrap.className = "flex flex-col gap-3";
-
-      if (!sources || sources.length === 0) {
-        wrap.innerHTML = "<p class='text-sm text-slate-400'>No page saved for this one yet.</p>";
-        return wrap;
+    // ---- moving around -------------------------------------------------------
+    function step(by) {
+      if (mode === "pages") {
+        qPage += by;
+      } else {
+        at = Math.max(0, Math.min(lesson.items.length - 1, at + by));
+        showPage = false;               // a new question starts on its crop
       }
-
-      sources.forEach((src, index) => {
-        const img = document.createElement("img");
-        img.src = src;
-        img.alt = "Page from the book";
-        img.className = "w-full rounded-lg border border-slate-200";
-        wrap.appendChild(img);
-
-        if (sources.length > 1) {
-          const label = document.createElement("p");
-          label.className = "text-xs text-slate-400 text-center -mt-1";
-          label.textContent = "page " + (index + 1) + " of " + sources.length;
-          wrap.appendChild(label);
-        }
-      });
-      return wrap;
+      render();
     }
 
-    // --- buttons
+    function setMode(next) {
+      if (next === mode) return;
+      if (next === "pages") {
+        // open on the page the current question is on
+        const pages = pagesFor(lesson.items[at]);
+        const index = lesson.pageImages.indexOf(pages[0]);
+        if (index !== -1) qPage = index;
+      } else {
+        // come back to the first question on the page you were looking at
+        const page = lesson.pageImages[qPage];
+        const index = lesson.items.findIndex((item) => pagesFor(item).includes(page));
+        if (index !== -1) at = index;
+        showPage = false;
+      }
+      mode = next;
+      render();
+    }
 
-    for (const button of document.querySelectorAll("[data-page-toggle]")) {
-      button.addEventListener("click", () => {
-        const side = button.dataset.pageToggle;
-        showingPage[side] = !showingPage[side];
-        button.className = "rounded-lg px-3 h-9 text-sm font-medium border " +
-          (showingPage[side] ? "bg-slate-800 text-white border-slate-800"
-                             : "border-slate-300 hover:bg-slate-100");
+    function openLesson(id, saved) {
+      lesson = LESSONS.find((l) => l.lesson === id) || LESSONS[0];
+      lessonSelect.value = lesson.lesson;
+      at = Math.max(0, Math.min(lesson.items.length - 1, (saved && saved.at) || 0));
+      qPage = (saved && saved.qPage) || 0;
+      aPage = (saved && saved.aPage) || 0;
+      showPage = false;
+      drawRail();
+      render();
+    }
+
+    // ---- wiring ------------------------------------------------------------
+    if (LESSONS.length === 0) {
+      document.querySelector("main").innerHTML =
+        "<p class='m-auto text-slate-500'>No data. Run <code>python tools/demo_data.py</code> first.</p>";
+    } else {
+      for (const l of LESSONS) {
+        const option = document.createElement("option");
+        option.value = l.lesson;
+        option.textContent = (l.lesson.endsWith(".0") || l.lesson.endsWith(".R") ? "" : l.lesson + "  ") + l.title;
+        lessonSelect.appendChild(option);
+      }
+
+      lessonSelect.addEventListener("change", () => openLesson(lessonSelect.value, null));
+      rail.addEventListener("click", (e) => {
+        const button = e.target.closest("button[data-index]");
+        if (!button) return;
+        at = Number(button.dataset.index);
+        showPage = false;
         render();
       });
-    }
 
-    // "Full" hides the other pane, for when one side needs the whole screen.
-    for (const button of document.querySelectorAll("[data-expand]")) {
-      button.addEventListener("click", () => {
-        const side = button.dataset.expand;
-        const other = side === "question" ? answerPane : questionPane;
-        other.classList.toggle("hidden");
-        button.textContent = other.classList.contains("hidden") ? "Split" : "Full";
+      $("prev").onclick = () => step(-1);
+      $("next").onclick = () => step(1);
+      $("answerPrev").onclick = () => { aPage--; render(); };
+      $("answerNext").onclick = () => { aPage++; render(); };
+      $("modeQuestions").onclick = () => setMode("questions");
+      $("modePages").onclick = () => setMode("pages");
+      $("pageBtn").onclick = () => { showPage = !showPage; render(); };
+      $("hideBtn").onclick = () => { answerHidden = !answerHidden; render(); };
+      $("wideQuestion").onclick = () => { wide = wide === "question" ? null : "question"; render(); };
+      $("wideAnswer").onclick = () => { wide = wide === "answer" ? null : "answer"; render(); };
+
+      document.addEventListener("keydown", (e) => {
+        if (e.target.tagName === "SELECT") return;
+        if (e.key === "ArrowRight") step(1);
+        else if (e.key === "ArrowLeft") step(-1);
+        else if (e.key === " ") { e.preventDefault(); answerHidden = !answerHidden; render(); }
       });
+
+      const saved = recall();
+      answerHidden = Boolean(saved.answerHidden);
+      mode = saved.mode === "pages" ? "pages" : "questions";
+      openLesson(saved.lesson, saved);
     }
-
-    document.getElementById("askAi").addEventListener("click", () => {
-      const item = section().items[current];
-      let text = `From ${section().label}, question ${current}.\n\n${item.q}\n\n`;
-      for (const [letter, part] of Object.entries(item.parts)) {
-        text += `${letter}) ${part.q}\n   Textbook answer: ${part.a}\n`;
-      }
-      text += `\nExplain the reasoning step by step, simply enough for a grade 9 student.`;
-
-      navigator.clipboard.writeText(text).catch(() => {});
-      window.open("https://chatgpt.com/?q=" + encodeURIComponent(text), "_blank");
-    });
-
-    sectionSelect.addEventListener("change", drawQuestionButtons);
-    drawQuestionButtons();
   </script>
 
 </body>

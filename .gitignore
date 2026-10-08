@@ -11,3 +11,6 @@ tools/sheets/
 
 # crop review page from tools/review.py - local only
 tools/review/
+
+# Python bytecode
+__pycache__/

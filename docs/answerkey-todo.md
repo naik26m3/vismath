@@ -1,0 +1,64 @@
+# Answer Key — Wishlist
+
+Tasks for `answerkey.html` + `js/answerkey.js`.
+The data it reads is in `data/mhr-grade-9/`, one JSON file per lesson.
+
+---
+
+## Done
+
+- [x] Top half / bottom half layout, each half scrolling on its own
+      (`min-h-0` on the pane AND on the image box, or nothing scrolls)
+- [x] Load a lesson's JSON with `fetch` inside an `async` function
+- [x] Show the first lesson page and the first answer page from the data
+- [x] Page number in each title, read from the image path (`pageNumber()`)
+- [x] ← → buttons for the question half, stopping at the first and last page
+- [x] ← → buttons for the answer half, with its own index
+- [x] Listeners at the top level, so loading another lesson will not stack them
+- [x] Both indexes go back to 0 when a lesson loads
+
+---
+
+## Good plane tasks (no internet needed)
+
+Live Server works offline. Tailwind comes from a CDN, so load the page once
+before you lose the connection and keep the tab open, or the styling will not load.
+
+- [ ] **Scroll back to the top when the page changes.**
+      Try it: scroll a page half-way down, press →. The new page opens half-way
+      down too, because the box kept its scroll position.
+      The box that scrolls is the `div` around the `<img>`, not the image.
+      A box knows how far it has been scrolled; you used that property in the
+      fraction drag code. Setting it puts the box where you want.
+      Do it for both halves.
+
+- [ ] **Show when a button has nowhere to go.**
+      On the first page ← does nothing, and nothing on screen says why. Same for →
+      on the last page. Most lessons have a single answer page, so both answer
+      buttons are dead most of the time.
+      Target: a button that cannot move looks faded and cannot be pressed.
+      Buttons have a property for "cannot be pressed", and Tailwind has a variant
+      that styles a button while it is in that state.
+      Think about WHEN this has to be worked out: after every press, and also when
+      a lesson first loads. That points at one function that sets all four buttons.
+
+- [ ] **Tidy `updatePage(page, num, img)`.** Inside it, `page` is the `<img>`,
+      `num` is the title and `img` is a path. Rename them to what they are.
+
+- [ ] **The four button listeners are nearly the same code.** Not urgent. Only
+      worth merging if you can see a way that is still easy to read.
+
+---
+
+## Next
+
+- [ ] **Lesson picker.** A dropdown listing the lessons; choosing one loads it.
+      `loadLesson` needs to take the lesson id instead of having `1.2.json`
+      typed in. There are 81 lesson files; think about where the list of them
+      comes from.
+- [ ] **Bigger buttons.** `h-[2rem]` is small for a finger. The fraction page
+      uses `h-11`.
+- [ ] **Questions mode.** One question next to its answer, using `items` in the
+      JSON. `demos/answer-key.html` shows the target.
+- [ ] **Hide answer** toggle, for when the student can see the screen.
+- [ ] Try it on the Fire HD in both orientations.

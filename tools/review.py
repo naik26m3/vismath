@@ -1,13 +1,14 @@
 """
-Build a page for checking crops by eye.
+Build pages for checking crops by eye.
 
 Each crop is shown next to the full page it was cut from, with a red box
 marking the cut. Press Y if it is right, N if it is wrong.
 
-    python tools/review.py mhr-grade-9 1 answers
-    python tools/review.py mhr-grade-9 1 questions
+    python tools/review.py mhr-grade-9 all        every chapter, questions and answers
+    python tools/review.py mhr-grade-9 3          one chapter
+    python tools/review.py mhr-grade-9 3 answers  one chapter, one kind
 
-Then open  tools/review/index.html  in a browser.
+Then open  tools/review/index.html  and pick a chapter.
 
 Everything it writes goes in tools/review/, which is not committed.
 """
@@ -23,13 +24,16 @@ from PIL import Image
 import extract
 
 book_id = sys.argv[1] if len(sys.argv) > 1 else "mhr-grade-9"
-chapter = sys.argv[2] if len(sys.argv) > 2 else "1"
-kind = sys.argv[3] if len(sys.argv) > 3 else "answers"
-if kind not in ("answers", "questions"):
-    sys.exit("third argument must be 'answers' or 'questions'")
+chapter = sys.argv[2] if len(sys.argv) > 2 else "all"
+kinds = [sys.argv[3]] if len(sys.argv) > 3 else ["questions", "answers"]
+for kind in kinds:
+    if kind not in ("answers", "questions"):
+        sys.exit("third argument must be 'answers' or 'questions'")
 
 # Re-run the extractor so the crops on disk and the recorded positions match.
-extract.run(book_id, chapter)
+extract.AUDIT.clear()
+extract.ANSWER_AUDIT.clear()
+summary = extract.run(book_id, chapter)
 
 book = extract.BOOKS[book_id]
 doc = fitz.open(extract.ROOT / book["pdf"])
@@ -37,34 +41,6 @@ doc = fitz.open(extract.ROOT / book["pdf"])
 out = extract.ROOT / "tools" / "review"
 pages_dir = out / "pages"
 pages_dir.mkdir(parents=True, exist_ok=True)
-
-if kind == "answers":
-    records = [(lesson, name, index, clip) for lesson, name, index, clip in extract.ANSWER_AUDIT]
-else:
-    records = [(r[0], r[1], r[2], r[3]) for r in extract.AUDIT]
-
-items = []
-rendered = set()
-for lesson, name, index, clip in records:
-    page = doc[index]
-    page_file = f"p{index + 1}.webp"
-    if index not in rendered:
-        pix = page.get_pixmap(dpi=110)
-        image = Image.open(io.BytesIO(pix.tobytes("png"))).convert("RGB")
-        image.save(pages_dir / page_file, "WEBP", quality=75)
-        rendered.add(index)
-
-    w, h = page.rect.width, page.rect.height
-    items.append({
-        "lesson": lesson,
-        "name": name,
-        "crop": f"../../assets/books/{book_id}/{kind}/{name}",
-        "page": f"pages/{page_file}",
-        "pdfPage": index + 1,
-        # where the crop sits on the page, as percentages
-        "box": [round(clip.x0 / w * 100, 2), round(clip.y0 / h * 100, 2),
-                round(clip.width / w * 100, 2), round(clip.height / h * 100, 2)],
-    })
 
 HTML = r"""<!DOCTYPE html>
 <html lang="en">
@@ -254,9 +230,92 @@ show();
 </html>
 """
 
-html = (HTML.replace("__ITEMS__", json.dumps(items))
-            .replace("__KEY__", f"{book_id}:{chapter}:{kind}"))
-(out / "index.html").write_text(html, encoding="utf-8")
 
-print(f"\n{len(items)} {kind} crops, {len(rendered)} pages")
+def chapter_of(lesson_id):
+    return lesson_id.split(".")[0]
+
+
+rendered = set()
+
+
+def build(chapter_id, kind):
+    """Write review/ch<N>-<kind>.html and return how many crops it holds."""
+    if kind == "answers":
+        records = [r[:4] for r in extract.ANSWER_AUDIT if chapter_of(r[0]) == chapter_id]
+    else:
+        records = [r[:4] for r in extract.AUDIT if chapter_of(r[0]) == chapter_id]
+
+    items = []
+    for lesson, name, index, clip in records:
+        page = doc[index]
+        page_file = f"pdf{index + 1}.webp"
+        if index not in rendered:
+            pix = page.get_pixmap(dpi=110)
+            image = Image.open(io.BytesIO(pix.tobytes("png"))).convert("RGB")
+            image.save(pages_dir / page_file, "WEBP", quality=75)
+            rendered.add(index)
+
+        w, h = page.rect.width, page.rect.height
+        items.append({
+            "lesson": lesson,
+            "name": name,
+            "crop": f"../../assets/books/{book_id}/{kind}/{name}",
+            "page": f"pages/{page_file}",
+            "pdfPage": index + 1,
+            # where the crop sits on the page, as percentages
+            "box": [round(clip.x0 / w * 100, 2), round(clip.y0 / h * 100, 2),
+                    round(clip.width / w * 100, 2), round(clip.height / h * 100, 2)],
+        })
+
+    html = (HTML.replace("__ITEMS__", json.dumps(items))
+                .replace("__KEY__", f"{book_id}:{chapter_id}:{kind}"))
+    (out / f"ch{chapter_id}-{kind}.html").write_text(html, encoding="utf-8")
+    return len(items)
+
+
+chapter_ids = sorted({chapter_of(s["lesson"]) for s in summary}, key=int)
+counts = {}
+for chapter_id in chapter_ids:
+    for kind in kinds:
+        counts[(chapter_id, kind)] = build(chapter_id, kind)
+
+# ---- the front page: one row per chapter, plus what the numbers say -------
+rows = []
+for chapter_id in chapter_ids:
+    lessons = [s for s in summary if chapter_of(s["lesson"]) == chapter_id]
+    notes = []
+    for s in lessons:
+        if s["missingPages"]:
+            notes.append(f'{s["lesson"]}: pages {s["missingPages"][0]}&ndash;{s["missingPages"][-1]} are not in the PDF')
+        if s["gaps"]:
+            notes.append(f'{s["lesson"]}: no question found for number {", ".join(map(str, s["gaps"]))}')
+        if s["orphans"]:
+            notes.append(f'{s["lesson"]}: {len(s["orphans"])} answer(s) with no question image')
+        if s["unanswered"]:
+            notes.append(f'{s["lesson"]}: no answer found for question {", ".join(s["unanswered"])}')
+    links = " &nbsp; ".join(
+        f'<a href="ch{chapter_id}-{kind}.html">{kind} ({counts[(chapter_id, kind)]})</a>' for kind in kinds)
+    rows.append(f"<tr><td><b>Chapter {chapter_id}</b></td><td>{links}</td>"
+                f"<td>{'<br>'.join(notes) or '&mdash;'}</td></tr>")
+
+# Only rewrite the front page when every chapter was built, so a single-chapter
+# run does not wipe the other rows.
+if chapter == "all":
+    (out / "index.html").write_text(f"""<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>Crop review</title>
+<style>
+  body {{ font-family: system-ui, sans-serif; margin: 2rem; color: #1e293b; }}
+  table {{ border-collapse: collapse; }}
+  td {{ border-bottom: 1px solid #e2e8f0; padding: 10px 16px; vertical-align: top; font-size: 15px; }}
+  td:last-child {{ color: #b45309; font-size: 13px; }}
+  a {{ color: #0284c7; }}
+</style></head><body>
+<h1>Crop review &mdash; {book["title"]}</h1>
+<p>Pick a chapter. Each page remembers your Y / N marks.<br>
+The last column lists what the counts alone already show is wrong or missing.</p>
+<table>{''.join(rows)}</table>
+</body></html>""", encoding="utf-8")
+
+for chapter_id in chapter_ids:
+    print(f"chapter {chapter_id}: " + ", ".join(f"{counts[(chapter_id, k)]} {k}" for k in kinds))
 print(f"open: {out / 'index.html'}")
