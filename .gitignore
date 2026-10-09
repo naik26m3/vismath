@@ -12,3 +12,6 @@ tools/
 
 # Python bytecode
 __pycache__/
+
+# Demo pages Claude built to try ideas out. Local only.
+demos/
