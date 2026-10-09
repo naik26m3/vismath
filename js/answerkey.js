@@ -27,7 +27,7 @@ function pageNumber(page) {
 
 function updatePage(page, num, img) {
     num.textContent = `Page ${pageNumber(img)}`;
-    page.src = img;
+    page.src = `${BOOKS_URL}/${img}`;
 }
 
 
@@ -62,7 +62,7 @@ loadIndex();
 
 
 async function loadLesson(lessonName) {
-    const response = await fetch(lessonName);
+    const response = await fetch(`${BOOKS_URL}/${lessonName}`);
     lesson = await response.json();
     questionIndex = 0;
     answerIndex = 0;
@@ -101,7 +101,7 @@ answerRightBtn.addEventListener('click', () => {
     }
 })
 
-loadLesson(BOOKS_URL + `/data/${params.get('book')}/1.0.json`);
+loadLesson(`data/${params.get('book')}/1.0.json`);
 
 
 
