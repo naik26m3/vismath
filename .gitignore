@@ -6,11 +6,9 @@ books/
 Thumbs.db
 .vscode/
 
-# contact sheets from tools/sheets.py - regenerate, do not commit
-tools/sheets/
-
-# crop review page from tools/review.py - local only
-tools/review/
+# The Python scripts that turn the textbook PDFs into images and JSON.
+# They stay on this computer only - the repo is the website.
+tools/
 
 # Python bytecode
 __pycache__/
