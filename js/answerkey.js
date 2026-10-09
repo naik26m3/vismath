@@ -1,3 +1,5 @@
+const BOOKS_URL = "https://vismath-books.pages.dev";
+
 const question = document.querySelector('#js-question');
 const questionPage = question.querySelector('#js-question-page');
 const questionPageNumber = question.querySelector('#js-question-page-number');
@@ -30,7 +32,7 @@ function updatePage(page, num, img) {
 
 
 async function loadIndex() {
-    const response = await fetch(`data/${params.get('book')}/index.json`);
+    const response = await fetch( BOOKS_URL + `/data/${params.get('book')}/index.json`);
     const index = await response.json();
 
     let lessonList = '';
@@ -99,7 +101,7 @@ answerRightBtn.addEventListener('click', () => {
     }
 })
 
-loadLesson(`data/${params.get('book')}/1.0.json`);
+loadLesson(BOOKS_URL + `/data/${params.get('book')}/1.0.json`);
 
 
 

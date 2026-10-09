@@ -15,3 +15,6 @@ __pycache__/
 
 # Demo pages Claude built to try ideas out. Local only.
 demos/
+
+# Cloudflare wrangler cache
+.wrangler/
