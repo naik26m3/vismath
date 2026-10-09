@@ -8,7 +8,7 @@ marking the cut. Press Y if it is right, N if it is wrong.
     python tools/review.py mhr-grade-9 3          one chapter
     python tools/review.py mhr-grade-9 3 answers  one chapter, one kind
 
-Then open  tools/review/index.html  and pick a chapter.
+Then open  tools/review/<book>/index.html  and pick a chapter.
 
 Everything it writes goes in tools/review/, which is not committed.
 """
@@ -38,7 +38,8 @@ summary = extract.run(book_id, chapter)
 book = extract.BOOKS[book_id]
 doc = fitz.open(extract.ROOT / book["pdf"])
 
-out = extract.ROOT / "tools" / "review"
+# one folder per book, so reviewing a second book does not overwrite the first
+out = extract.ROOT / "tools" / "review" / book_id
 pages_dir = out / "pages"
 pages_dir.mkdir(parents=True, exist_ok=True)
 
@@ -259,7 +260,7 @@ def build(chapter_id, kind):
         items.append({
             "lesson": lesson,
             "name": name,
-            "crop": f"../../assets/books/{book_id}/{kind}/{name}",
+            "crop": f"../../../assets/books/{book_id}/{kind}/{name}",
             "page": f"pages/{page_file}",
             "pdfPage": index + 1,
             # where the crop sits on the page, as percentages

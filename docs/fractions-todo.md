@@ -1,6 +1,7 @@
 # Fraction Visualizer — Wishlist
 
 Tasks for `fractions.html` + `js/fractions.js` only.
+**The open tasks are collected in `docs/todo.md` — work from that one.** This file keeps the history and the reasons.
 Newest ideas go at the bottom of "Someday". Move things up as they get real.
 
 ---
@@ -83,7 +84,7 @@ Written 2026-09-26. This is the real goal — the stuff below is in service of i
 
 ## Next
 
-- [ ] **NEXT UP (picked 2026-10-03) — Stacked fraction symbol in the BARS.** The dialog already does this (numerator over
+- [x] DONE with KaTeX (`frac()` in `js/fractions.js`) — **Stacked fraction symbol in the BARS.** The dialog already does this (numerator over
       denominator, border as the fraction line). The bar pieces still say `1/5` as flat text.
       Same trick should work — no KaTeX needed.
 - [ ] **Validation gaps still open:**
@@ -112,9 +113,9 @@ Written 2026-09-26. This is the real goal — the stuff below is in service of i
 - [ ] `overflow-scroll` vs `overflow-hidden` — not decided. Scrolling and dragging compete for the same finger.
 - [ ] Dragging a bar does not bring it to the front; it can end up under another bar
 - [ ] No `pointercancel` handler — an interrupted drag leaves `isDragging` stuck on
-- [ ] `14 * 4` hardcoded in `bar.style.top` — that is the bar height from `h-14`. Change `h-14` and
+- [x] DONE (`BAR_HEIGHT`) — `14 * 4` hardcoded in `bar.style.top` — that is the bar height from `h-14`. Change `h-14` and
       this silently breaks. Name it, like `BAR_SPACING`.
-- [ ] The two input fields are re-queried on every submit; `stage`/`input`/`form` are cached at the top
+- [x] DONE — The two input fields are re-queried on every submit; `stage`/`input`/`form` are cached at the top
 
 ---
 
@@ -122,9 +123,9 @@ Written 2026-09-26. This is the real goal — the stuff below is in service of i
 
 Core first. Come back to these.
 
-- [ ] Colors and contrast (`bg-amber-300` with inherited light text in dark mode)
+- [x] DONE (single light theme) — Colors and contrast (`bg-amber-300` with inherited light text in dark mode)
 - [ ] Sizes and spacing
-- [ ] Stage border styling
+- [x] DONE — Stage border styling
 - [ ] Redundant `mx-auto` on elements already centered by flex
 - [ ] Spinner arrows on the number inputs (needs `::-webkit-inner-spin-button` in style.css)
 

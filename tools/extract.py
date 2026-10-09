@@ -42,9 +42,32 @@ ROOT = Path(__file__).resolve().parent.parent
 BOOKS = {
     "mhr-grade-9": {
         "title": "MHR Mathematics 9",
-        "pdf": "books/MHR+GRADE+9.pdf",
+        "pdf": "books/mcgraw-hill-ryerson_principles-of-mathematics-9/principles-of-mathematics-9.pdf",
         "answers_from": 541,
         "answers_to": 585,          # p586 onward is the Glossary, then Index
+    },
+    "mcgraw-hill-ryerson_principles-of-mathematics-10": {
+        "title": "Principles of Mathematics 10",
+        "publisher": "McGraw-Hill Ryerson",
+        "pdf": "books/mcgraw-hill-ryerson_principles-of-mathematics-10/principles-of-mathematics-10.pdf",
+        "answers_from": 506,
+        "answers_to": 571,          # p572 onward is the Glossary, then Index
+    },
+    "nelson_functions-11": {
+        "title": "Functions 11",
+        "publisher": "Nelson",
+        "style": "nelson",
+        "pdf": "books/nelson_functions-11/functions-11.pdf",
+        "answers_from": 627,
+        "answers_to": 695,
+    },
+    "nelson_principles-of-mathematics-10": {
+        "title": "Principles of Mathematics 10",
+        "publisher": "Nelson",
+        "style": "nelson",
+        "pdf": "books/nelson_principles-of-mathematics-10/principles-of-mathematics-10.pdf",
+        "answers_from": 619,
+        "answers_to": 693,
     },
 }
 
@@ -108,7 +131,7 @@ PART_HEADING = re.compile(r'^([A-D]):\s+[A-Z]')
 def section_heading_name(text):
     """The section a heading line opens, or None if it isn't one."""
     flat = " ".join(text.split())
-    if len(flat) < 70:
+    if STYLE["name"] == "mhr" and len(flat) < 70:
         m = PART_HEADING.match(flat)
         if m:
             return f"Investigate {m.group(1)}"
@@ -116,9 +139,19 @@ def section_heading_name(text):
     # question whose text begins "Investigate whether...", and the
     # "Extended Response" label on a test, and moved real questions into the
     # wrong section. Trailing dots and rules after the word are ignored.
+    # A line ending in one full stop is the end of a sentence: "For help with
+    # questions 1 to 4, refer to the / Investigate." wraps so that its last
+    # line is exactly a heading word. A row of dots after a heading is fine.
+    if flat.endswith(".") and not flat.endswith(".."):
+        return None
     bare = re.sub(r'[\W_]+$', '', flat)
     for name in SECTION_HEADINGS:
-        if name != "Questions" and bare == name:
+        if name in ("Questions", "Other"):
+            continue                      # labels of our own, never printed
+        if bare == name:
+            return name
+        # Nelson is not consistent about capitals: "CHECK Your understanding"
+        if STYLE["name"] == "nelson" and bare.lower() == name.lower():
             return name
     return None
 
@@ -135,25 +168,113 @@ EXERCISE_SECTIONS = {
 
 # A question starts with "N." near the left edge of its column. Parts a) b) c)
 # are indented further, so the x position is what tells them apart.
-QUESTION_RE = re.compile(r'^(\d+)\.(?!\d)')
+# --------------------------------------------------------------------------
+# Publisher styles
+#
+# The cropping is the same for every book. What differs between publishers is
+# what things are CALLED and where the page number is printed:
+#
+#                      McGraw-Hill Ryerson          Nelson
+#   exercise sections  Practise / Connect and       CHECK Your Understanding /
+#                      Apply / Extend               PRACTISING / Extending
+#   answer headings    "2.3 Title, pages 56-67"     "Lesson 1.1, pp. 10-12"
+#   page number        "44 MHR - Chapter 2"         "44" on a line by itself
+#
+# A book names its style in BOOKS; run() switches to it before doing anything.
+# --------------------------------------------------------------------------
+
+STYLE = {"name": "mhr"}
+
+MHR_SECTIONS = SECTION_HEADINGS
+MHR_EXERCISE = EXERCISE_SECTIONS
+
+NELSON_SECTIONS = [
+    "Questions",                 # not printed - see default_section()
+    "CHECK Your Understanding", "FURTHER Your Understanding",
+    "PRACTISING", "Extending",
+    "PRACTICE Questions", "PRACTICE", "SKILLS AND CONCEPTS You Need",
+    # everything below is teaching, not exercises
+    "Other",
+    "LEARN ABOUT the Math", "INVESTIGATE the Math", "APPLY the Math",
+    "EXPLORE the Math", "Reflecting", "In Summary", "Key Idea", "Key Ideas",
+    "Need to Know", "FREQUENTLY ASKED Questions", "Curious Math",
+    "YOU WILL NEED", "GOAL", "GOALS", "APPLYING What You Know",
+]
+NELSON_EXERCISE = {
+    "Questions", "CHECK Your Understanding", "FURTHER Your Understanding",
+    "PRACTISING", "Extending",
+    "PRACTICE Questions", "PRACTICE", "SKILLS AND CONCEPTS You Need",
+}
+
+
+def use_style(name):
+    """Switch every publisher-specific rule to this style."""
+    global SECTION_HEADINGS, EXERCISE_SECTIONS
+    STYLE["name"] = name
+    if name == "nelson":
+        SECTION_HEADINGS, EXERCISE_SECTIONS = NELSON_SECTIONS, NELSON_EXERCISE
+    else:
+        SECTION_HEADINGS, EXERCISE_SECTIONS = MHR_SECTIONS, MHR_EXERCISE
+
+
+QUESTION_RE = re.compile(r'^([1-9]\d{0,2})\.(?!\d)')     # "0." is never a question
+MAX_QUESTION = 150      # "346." or "2104." at the start of a line is not a question
 
 
 _DRAWINGS = {}
 _TEXTDICT = {}
 
 
+def _page_key(page):
+    # The book as well as the page number: with two books open, page 300 of one
+    # must not be answered with page 300 of the other.
+    return (page.parent.name, page.number)
+
+
 def drawings_of(page):
-    """drawings_of(page), remembered - it is slow and asked for per question."""
-    if page.number not in _DRAWINGS:
-        _DRAWINGS[page.number] = page.get_drawings()
-    return _DRAWINGS[page.number]
+    """The page's vector drawings, remembered - slow, and asked for per question."""
+    key = _page_key(page)
+    if key not in _DRAWINGS:
+        _DRAWINGS[key] = page.get_drawings()
+    return _DRAWINGS[key]
+
+
+def tighten(textdict):
+    """
+    Shrink every line's box to its letters.
+
+    The box PyMuPDF reports comes from the font, and a line with a superscript
+    or a symbol from a maths font can be given a box 12pt tall where the lines
+    are only 10pt apart. Its box then overlaps the rows above and below, and
+    crops that trust it take a sliver of the neighbour and lose their own last
+    line. Letters sit between about 0.86 of the font size above the baseline
+    and 0.28 below it, so measure from that. The box is never made bigger.
+    """
+    for block in textdict["blocks"]:
+        for line in block.get("lines", []):
+            if abs(line["dir"][0] - 1) > 0.01:
+                continue                      # rotated text: leave it alone
+            spans = [sp for sp in line["spans"] if sp["text"].strip()]
+            if not spans:
+                continue
+            x0, y0, x1, y1 = line["bbox"]
+            top = min(sp["origin"][1] - 0.86 * sp["size"] for sp in spans)
+            bottom = max(sp["origin"][1] + 0.28 * sp["size"] for sp in spans)
+            line["bbox"] = (x0, max(y0, top), x1, min(y1, bottom))
+    return textdict
+
+
+def is_level(line):
+    """Ordinary left-to-right text, not a rotated tab or axis label."""
+    return abs(line["dir"][0] - 1) < 0.01
 
 
 def textdict_of(page):
-    """page.get_text("dict"), remembered."""
-    if page.number not in _TEXTDICT:
-        _TEXTDICT[page.number] = page.get_text("dict")
-    return _TEXTDICT[page.number]
+    """page.get_text("dict"), remembered, with line boxes tightened."""
+    key = _page_key(page)
+    if key not in _TEXTDICT:
+        _TEXTDICT[key] = tighten(page.get_text("dict"))
+    return _TEXTDICT[key]
 
 
 _PAGE_MAPS = {}
@@ -163,38 +284,66 @@ PRINTED_NUMBER = re.compile(r'(?:^|\s)(\d{1,3})\s+MHR\b|\bMHR\s+(\d{1,3})\s*$')
 def page_map(doc):
     """
     {book page number: pdf page index}, read from the number printed in each
-    page's footer ("44 MHR - Chapter 2", "Answers - MHR 539").
+    page's footer.
 
     Chapter-opener pages print no number; they are filled in from their
-    neighbours. Front matter is skipped - its roman numerals and the table of
-    contents produce numbers that are not page numbers.
+    neighbours. A fixed offset is not safe: one PDF here is missing eight
+    pages, and another has some pages in it twice.
     """
     if doc.name in _PAGE_MAPS:
         return _PAGE_MAPS[doc.name]
 
-    by_index = {}
-    for index in range(12, doc.page_count):
-        page = doc[index]
-        for x0, y0, x1, y1, text in lines_of(page):
-            if y0 > page.rect.height - 70 and "MHR" in text:
-                m = PRINTED_NUMBER.search(text)
-                if m:
-                    by_index[index] = int(m.group(1) or m.group(2))
+    raw = {}
+    if STYLE["name"] == "nelson":
+        # the number sits on a line by itself, near the "NEL" mark
+        for index in range(doc.page_count):
+            page = doc[index]
+            found = [l[4] for l in lines_of(page)
+                     if l[1] > page.rect.height - 75 and re.fullmatch(r'\d{1,3}', l[4])]
+            if len(found) == 1:
+                raw[index] = int(found[0])
+        # A lone number proves little, so believe it only when the page before
+        # or after agrees with it.
+        by_index = {i: n for i, n in raw.items()
+                    if raw.get(i - 1) == n - 1 or raw.get(i + 1) == n + 1}
+    else:
+        # "44 MHR - Chapter 2", "Answers - MHR 539"
+        for index in range(doc.page_count):
+            page = doc[index]
+            for x0, y0, x1, y1, text in lines_of(page):
+                if y0 > page.rect.height - 70 and "MHR" in text:
+                    m = PRINTED_NUMBER.search(text)
+                    if m:
+                        raw[index] = int(m.group(1) or m.group(2))
+
+        # From the 13th PDF page on, a printed number is believed. Before that
+        # the table of contents is full of numbers that are not page numbers,
+        # so an early page only counts if it lines up with the first believed
+        # page: five PDF pages earlier must be five book pages earlier.
+        by_index = {i: n for i, n in raw.items() if i >= 12}
+        if by_index:
+            anchor = min(by_index)
+            for i in sorted((i for i in raw if i < 12), reverse=True):
+                if anchor - i == by_index[anchor] - raw[i]:
+                    by_index[i] = raw[i]
 
     # a page with no number, between two that are two apart
-    for index in range(13, doc.page_count - 1):
+    for index in range(1, doc.page_count - 1):
         if index not in by_index and index - 1 in by_index and index + 1 in by_index:
             if by_index[index + 1] - by_index[index - 1] == 2:
                 by_index[index] = by_index[index - 1] + 1
     # ...and the pairs of unnumbered pages at each chapter opening
-    for index in range(13, doc.page_count - 2):
+    for index in range(1, doc.page_count - 2):
         if (index not in by_index and index + 1 not in by_index
                 and index - 1 in by_index and index + 2 in by_index
                 and by_index[index + 2] - by_index[index - 1] == 3):
             by_index[index] = by_index[index - 1] + 1
             by_index[index + 1] = by_index[index - 1] + 2
 
-    mapping = {book_page: index for index, book_page in by_index.items()}
+    # If a page is in the file twice, the first copy is the one used.
+    mapping = {}
+    for index in sorted(by_index):
+        mapping.setdefault(by_index[index], index)
     _PAGE_MAPS[doc.name] = mapping
     return mapping
 
@@ -202,11 +351,102 @@ def page_map(doc):
 LESSON_HEADING = re.compile(r'^(\d+)\.(\d+)\s+([A-Z].*)$')
 OTHER_HEADING = re.compile(
     r'^(Get Ready|Chapter (\d+) (?:Practice )?Test|Chapter (\d+) Review'
-    r'|Chapters \d+ to (\d+) Review)\b')
+    r'|Chapters \d+ (?:to|and) (\d+) Review|Course Review)\b')
 PAGES = re.compile(r'\bpages?\s+(\d+)(?:\D{1,3}(\d+))?')
 
 
+NELSON_HEADING = re.compile(
+    r'^(?:Lesson (\d+)\.(\d+)'
+    r'|(Getting Started)'
+    r'|(Mid.Chapter Review)'
+    r'|(Chapter (?:\d+ )?Review)'
+    r'|(Chapter Self.Test)'
+    r'|(Cumulative Review Chapters \d+\D\d+|Chapters \d+\D\d+ Cumulative Review))'
+    r'\s*,\s*(?:pp?\.|pages?)\s*(\d+)(?:\D{1,3}(\d+))?')
+
+
+def read_lessons_nelson(segments):
+    """
+    Nelson's answer key: "Lesson 1.1, pp. 10-12", "Getting Started, p. 2",
+    "Mid-Chapter Review, p. 40", "Chapter Self-Test, p. 78". No lesson titles.
+
+    The page reference is where the EXERCISES are, not the whole lesson. One
+    book gives a range; the other gives only the first page, so the end is
+    taken as the page before the next heading starts and trimmed later to the
+    pages that really have questions on them.
+    """
+    found, stops = [], []
+    chapter = None
+
+    for i, (_, _, _, _, text) in enumerate(segments):
+        m = re.match(r'^Chapter (\d+)\s*$', text)
+        if m:
+            chapter = m.group(1)
+            stops.append(i)
+            continue
+        if chapter is None:
+            continue
+        # Appendix answers belong to no lesson: "A-1 Operations with Integers,
+        # p. 542". The dash and the page reference both have to be there - an
+        # answer line such as "A = 0.5(3)^x" also starts with A and a number.
+        if re.match(r'^A[-\u2013\u2014]\d+\s+[A-Z].*,\s*(?:pp?\.|pages?)\s*\d', text):
+            stops.append(i)
+            continue
+
+        m = NELSON_HEADING.match(text)
+        if not m:
+            continue
+        if m.group(1):
+            if m.group(1) != chapter:
+                continue
+            lesson_id, title = f"{m.group(1)}.{m.group(2)}", f"Lesson {m.group(1)}.{m.group(2)}"
+        elif m.group(3):
+            lesson_id, title = f"{chapter}.0", "Getting Started"
+        elif m.group(4):
+            lesson_id, title = f"{chapter}.M", "Mid-Chapter Review"
+        elif m.group(5):
+            lesson_id, title = f"{chapter}.R", "Chapter Review"
+        elif m.group(6):
+            lesson_id, title = f"{chapter}.T", "Chapter Self-Test"
+        else:
+            lesson_id, title = f"{chapter}.C", " ".join(m.group(7).split())
+
+        stops.append(i)
+        if any(f[0] == lesson_id for f in found):
+            continue                                  # a page that is in the file twice
+        first = int(m.group(8))
+        # The book only goes forwards. A heading that points back to an earlier
+        # page is a repeat of one already seen (one file has chapter 4's
+        # Self-Test heading again inside chapter 5), so its answers are skipped.
+        if found and first < found[-1][2]:
+            continue
+        last = int(m.group(9)) if m.group(9) else None
+        found.append([lesson_id, title, first, last, chapter, i])
+
+    # fill in the ends that the book did not give
+    for n, item in enumerate(found):
+        if item[3] is None:
+            following = found[n + 1][2] if n + 1 < len(found) else item[2] + 4
+            item[3] = max(item[2], min(following - 1, item[2] + 7))
+        elif item[3] < item[2]:
+            item[3] = item[2]
+
+    chapters, spans = {}, {}
+    stops = sorted(set(stops)) + [len(segments)]
+    for lesson_id, title, first, last, chapter, line in found:
+        chapters.setdefault(chapter, []).append((lesson_id, title, first, last))
+        spans[lesson_id] = (line, next(x for x in stops if x > line))
+    return chapters, spans
+
+
 def read_lessons(segments):
+    """The book's lesson list, in whichever form its publisher writes it."""
+    if STYLE["name"] == "nelson":
+        return read_lessons_nelson(segments)
+    return read_lessons_mhr(segments)
+
+
+def read_lessons_mhr(segments):
     """
     The book's lesson list, read from the headings of the Answers section.
 
@@ -222,15 +462,19 @@ def read_lessons(segments):
     chapter = None
 
     for i, (_, _, _, _, text) in enumerate(segments):
-        m = re.match(r'^Chapter (\d+)\s*$', text)
+        # "Chapter 5", and sometimes "Chapter 6 Answers"
+        m = re.match(r'^Chapter (\d+)(?:\s+Answers)?\s*$', text)
         if m:
             chapter = m.group(1)
             stops.append(i)
             continue
         if chapter is None:
             continue
-        if text.startswith("Use Technology"):
-            stops.append(i)          # its answers belong to no lesson
+        # Answers that belong to no lesson: technology pages, and the
+        # appendices that follow the last chapter.
+        if (text.startswith("Use Technology")
+                or re.match(r'^(Challenge Problems|Prerequisite Skills|Technology|Skills) Appendix', text)):
+            stops.append(i)
             continue
 
         lesson_id = title = None
@@ -245,6 +489,8 @@ def read_lessons(segments):
                     lesson_id = f"{chapter}.0"
                 elif "Test" in title:
                     lesson_id = f"{chapter}.T"
+                elif title == "Course Review":
+                    lesson_id = f"{chapter}.X"
                 elif title.startswith("Chapters"):
                     lesson_id = f"{chapter}.C"
                 else:
@@ -403,8 +649,11 @@ def content_extent(page, x_from, x_to, top, end, body_right=None, next_top=None,
         # see Example 2." lines that sit between questions. Neither belongs to
         # the question above or below it.
         flat = " ".join(text.split())
+        # Nelson reviews also print "Lesson 8.5" above each group of questions.
         return bool(flat) and (section_heading_name(flat) is not None
-                               or flat.startswith("For help with"))
+                               or flat.startswith("For help with")
+                               or (STYLE["name"] == "nelson"
+                                   and re.fullmatch(r'Lesson \d+\.\d+', flat) is not None))
 
     # Step tabs: drop the label and the coloured shape behind it.
     banners = [r for r, t, k in items if k == "text" and " ".join(t.split()) in BANNER_LABELS]
@@ -602,20 +851,46 @@ def content_floor(page):
 
     A fixed margin cut off real content: the last line of a question can sit
     closer to the bottom than any safe-looking guess. Find the running footer
-    ("4 MHR • Chapter 1", "Answers • MHR 539") and stop just above it.
+    and stop just above it.
     """
     rect = page.rect
+    if STYLE["name"] == "nelson":
+        # a bare page number, "NEL", "Chapter 2", "Answers"
+        footer_tops = [l[1] for l in lines_of(page)
+                       if l[1] > rect.height - 62
+                       and (re.fullmatch(r'\d{1,3}', l[4]) or l[4] in ("NEL", "Answers")
+                            or re.fullmatch(r'Chapter \d+', l[4]))]
+        return (min(footer_tops) - 2) if footer_tops else rect.height - 40
+
+    # "4 MHR - Chapter 1", "Answers - MHR 539"
     footer_tops = [l[1] for l in lines_of(page)
                    if l[1] > rect.height - 70 and "MHR" in l[4]]
     return (min(footer_tops) - 1) if footer_tops else rect.height - 30
 
 
+def in_body(line, page, floor):
+    """Is this line part of the page's content, not its running header/footer?"""
+    if line[1] >= floor:
+        return False
+    if STYLE["name"] == "nelson":
+        # Content can start right at the top of these pages. The only header is
+        # the lesson number ("2.4") in a top corner.
+        return not (line[1] < 62 and re.fullmatch(r'\d+\.\d+', line[4]))
+    return line[1] > 40
+
+
 def default_section(title):
     """
     The section a question belongs to before any heading has been seen.
-    Get Ready, Chapter Review and Chapter Test print no headings at all and are
-    nothing but exercises; ordinary lessons open with Investigate.
+
+    Pages that are nothing but exercises (Get Ready, reviews, tests) print no
+    section headings, so their questions count from the top. A lesson's pages
+    open with teaching, so nothing counts until an exercise heading appears.
     """
+    if STYLE["name"] == "nelson":
+        if re.search(r'Getting Started|Review|Self.Test', title, re.I):
+            return "Questions"
+        return "Other"
     if re.search(r'Get Ready|Review|Test', title, re.I):
         return "Questions"
     return "Investigate"
@@ -639,12 +914,12 @@ def crop_questions(doc, book, lesson, out_dir, rel_dir):
         rect = page.rect
         bottom_limit = content_floor(page)
 
-        body = [l for l in lines_of(page) if 40 < l[1] < bottom_limit]
+        body = [l for l in lines_of(page) if in_body(l, page, bottom_limit)]
         if not body:
             continue
 
         candidates = [(l, QUESTION_RE.match(l[4])) for l in body]
-        candidates = [(l, m) for l, m in candidates if m]
+        candidates = [(l, m) for l, m in candidates if m and int(m.group(1)) <= MAX_QUESTION]
         if not candidates:
             continue
 
@@ -667,20 +942,30 @@ def crop_questions(doc, book, lesson, out_dir, rel_dir):
 
         # Where each section heading sits, so a question knows which run of
         # numbering it belongs to.
+        # On a two-column page the right column carries on from the bottom of
+        # the left one, so "which heading am I under" follows reading order:
+        # every heading in an earlier column, then those above me in my own.
+        def column_of(x):
+            for n, column in enumerate(columns):
+                if column.x0 <= x < column.x1:
+                    return n
+            return 0
+
         heading_positions = []
-        for _, y0, _, _, text in body:
+        for hx, y0, _, _, text in body:
             name = section_heading_name(text)
             if name:
-                heading_positions.append((y0, name))
+                heading_positions.append((column_of(hx), y0, name))
+        heading_positions.sort()
 
-        def section_at(y):
+        def section_at(y, column_index):
             current = carried["section"]
-            for hy, name in heading_positions:
-                if hy <= y:
+            for hc, hy, name in heading_positions:
+                if hc < column_index or (hc == column_index and hy <= y):
                     current = name
             return current
 
-        for column in columns:
+        for column_index, column in enumerate(columns):
             in_column = [(l, m) for l, m in candidates if column.x0 <= l[0] < column.x1]
             if not in_column:
                 continue
@@ -693,12 +978,28 @@ def crop_questions(doc, book, lesson, out_dir, rel_dir):
             body_right = body_right_edge(page, indent, column.x1)
             starts.sort(key=lambda s: s[1])
 
+            # A number that leaps far ahead of the run and has no neighbour
+            # after it is a number in the text ("25." ending a sentence), not
+            # question 25. Left in, it also cuts the real question above it
+            # short. A leap that is followed by the next number is kept: that
+            # is a real run whose earlier questions were on another page.
+            kept = []
+            for k, start in enumerate(starts):
+                n = int(start[0])
+                last = carried.get("last", 0)
+                following = int(starts[k + 1][0]) if k + 1 < len(starts) else None
+                if last and n > last + 4 and following != n + 1:
+                    continue
+                kept.append(start)
+                carried["last"] = n
+            starts = kept
+
             for i, (number, top, x0) in enumerate(starts):
                 # Only the exercise run is kept. Investigate questions have no
                 # entry in the answer key, so there is nothing to look up.
                 # (They still count as "starts", so the exercise question
                 # before one stops where it should.)
-                if section_at(top) not in EXERCISE_SECTIONS:
+                if section_at(top, column_index) not in EXERCISE_SECTIONS:
                     continue
                 end = starts[i + 1][1] if i + 1 < len(starts) else bottom_limit
                 end = min(end, bottom_limit)
@@ -724,7 +1025,7 @@ def crop_questions(doc, book, lesson, out_dir, rel_dir):
                 if clip.height < 12:
                     continue
 
-                section = section_at(top)
+                section = section_at(top, column_index)
                 slug = re.sub(r'[^a-z0-9]+', '-', section.lower()).strip('-')
                 # Two Investigate runs in one lesson both have a question 1, so
                 # the name carries the page and, if needed, a counter.
@@ -744,7 +1045,7 @@ def crop_questions(doc, book, lesson, out_dir, rel_dir):
                 AUDIT.append((lesson_id, name, index, clip, column.x0, column.x1, end))
 
         if heading_positions:
-            carried["section"] = heading_positions[-1][1]
+            carried["section"] = heading_positions[-1][2]
 
     return found
 
@@ -762,18 +1063,29 @@ def answer_segments(doc, book):
     so block-level segmentation cannot see where answer 2 starts.
     """
     segments = []
+    previous_text = None
     for index in range(book["answers_from"] - 1, min(book["answers_to"], doc.page_count)):
         page = doc[index]
         rect = page.rect
+
+        # Some files contain the same page twice in a row. Read it once.
+        text = page.get_text().strip()
+        if text and text == previous_text:
+            continue
+        previous_text = text
+
         middle = column_split(page)
 
         for column in (fitz.Rect(rect.x0, rect.y0, middle, rect.y1),
                        fitz.Rect(middle, rect.y0, rect.x1, rect.y1)):
             lines = []
-            for block in page.get_text("dict", clip=column)["blocks"]:
+            floor = content_floor(page)
+            for block in tighten(page.get_text("dict", clip=column))["blocks"]:
                 for line in block.get("lines", []):
                     text = "".join(span["text"] for span in line["spans"]).strip()
-                    if text:
+                    # The running footer ("Answers 663") and the tab printed
+                    # sideways down the page edge are not answers.
+                    if text and is_level(line) and line["bbox"][1] < floor:
                         x0, y0 = line["bbox"][0], line["bbox"][1]
                         lines.append((index, column, y0, x0, text))
             lines.sort(key=lambda l: l[2])
@@ -788,26 +1100,51 @@ ANSWER_INDENT = 95
 
 def column_split(page):
     """
-    Where the gutter between the two answer columns is, on this page.
+    Where the gutter between two columns is, on this page.
 
-    It moves from page to page, so it has to be measured. The gutter is the one
-    vertical strip that no line of text crosses: scan across the middle of the
-    page, count how many lines span each x, and take the centre of the longest
-    run where that count is lowest (zero, on a normal page).
+    It moves from page to page, so it has to be measured.
+
+    First choice: find where the right-hand column starts. Its lines begin at
+    the same few x positions over and over, somewhere near the middle of the
+    page, and no line of the left column reaches that far. The gutter is just
+    left of that.
+
+    If that finds nothing, fall back to the widest strip that no line crosses.
+    On its own that rule is not safe: a page whose left column is narrow has a
+    wide empty strip in the wrong place, and the split lands inside it.
     """
     rect = page.rect
-    top, bottom = rect.y0 + 50, rect.y1 - 50          # ignore header / footer
+    # Ignore the running footer, and only a thin strip at the very top: a
+    # lesson heading can be the first line on the page (y = 47), and if it is
+    # not seen here the cut can land inside it and slice its number off.
+    top, bottom = rect.y0 + 30, rect.y1 - 50
     spans = [(line["bbox"][0], line["bbox"][2])
              for block in textdict_of(page)["blocks"]
              for line in block.get("lines", [])
              if top < line["bbox"][1] < bottom]
+    if not spans:
+        return (rect.x0 + rect.x1) / 2
+
+    # x positions, near the middle, where several lines start
+    starts = {}
+    for x0, _ in spans:
+        if rect.x0 + rect.width * 0.38 <= x0 <= rect.x0 + rect.width * 0.62:
+            key = round(x0 / 2) * 2
+            starts[key] = starts.get(key, 0) + 1
+    for start in sorted(x for x, count in starts.items() if count >= 3):
+        cut = start - 3
+        if any(x0 < cut < x1 for x0, x1 in spans):
+            continue
+        # Nothing may START just left of it either. If something does, this is
+        # not the column's edge but an indent inside it: the answer numbers sit
+        # further left, and a cut here would leave them in the wrong column.
+        if any(cut - 45 <= x0 < cut for x0, _ in spans):
+            continue
+        return cut
 
     low = int(rect.x0 + rect.width * 0.30)
     high = int(rect.x0 + rect.width * 0.70)
     counts = [sum(1 for x0, x1 in spans if x0 < x < x1) for x in range(low, high)]
-    if not counts:
-        return (rect.x0 + rect.x1) / 2
-
     fewest = min(counts)
     best_start, best_len, run_start = low, 0, None
     for i, c in enumerate(counts + [fewest + 1]):        # sentinel ends last run
@@ -830,11 +1167,21 @@ def crop_answers(doc, book, lesson, segments, out_dir, rel_dir, span):
 
     mine = segments[start_at + 1:stop_at]
 
-    starts = []
+    # Answer numbers hang at the left of their column. A numbered list inside
+    # an answer ("1. Always do common factor first.") is indented further, and
+    # counting it as an answer wrote its crop over the real answer 1. So find
+    # where the numbers sit in each column, and only believe those.
+    candidates = []
     for i, (index, column, y0, x0, text) in enumerate(mine):
         m = QUESTION_RE.match(text)
-        if m and x0 <= column.x0 + ANSWER_INDENT:
-            starts.append((m.group(1), i))
+        if m and int(m.group(1)) <= MAX_QUESTION and x0 <= column.x0 + ANSWER_INDENT:
+            candidates.append((m.group(1), i))
+    hang = {}
+    for number, i in candidates:
+        key = (mine[i][0], round(mine[i][1].x0))
+        hang[key] = min(hang.get(key, 1e9), mine[i][3])
+    starts = [(number, i) for number, i in candidates
+              if mine[i][3] <= hang[(mine[i][0], round(mine[i][1].x0))] + 11]
 
     found = {}
     row_cache = {}
@@ -845,8 +1192,9 @@ def crop_answers(doc, book, lesson, segments, out_dir, rel_dir, span):
         if key not in row_cache:
             page = doc[index]
             lines = [fitz.Rect(line["bbox"])
-                     for block in page.get_text("dict", clip=column)["blocks"]
-                     for line in block.get("lines", [])]
+                     for block in tighten(page.get_text("dict", clip=column))["blocks"]
+                     for line in block.get("lines", [])
+                     if is_level(line) or 45 < line["bbox"][0] < page.rect.x1 - 45]
             pr = page.rect
             drawings = []
             for d in drawings_of(page):
@@ -885,12 +1233,26 @@ def crop_answers(doc, book, lesson, segments, out_dir, rel_dir, span):
             row = [r for r in lines if y - 12 <= r.y0 < y + 4 and r.y1 > y + 2]
             return min([r.y0 for r in row] + [y])
 
+        def last_line_above(y, lines=lines):
+            # The bottom of the line just above an answer's first row, if it
+            # comes within a few points of that row. Where rows are packed
+            # tightly the two can touch or even overlap, and the line above
+            # belongs to the answer above: that answer keeps all of it.
+            near = [r.y1 for r in lines if r.y0 < y - 5 and y - 4 < r.y1 <= y + 1]
+            return max(near) if near else None
+
         crop_top = first_row_top(y0) - 2
+        above = last_line_above(y0)
+        if above is not None:
+            crop_top = min(max(crop_top, above), y0 - 0.5)
 
         # Bottom: where the NEXT answer's first row really begins.
         if same:
             next_top = first_row_top(end_y)
             bottom = next_top - 1
+            above = last_line_above(end_y)
+            if above is not None and above > crop_top + 4:
+                bottom = max(bottom, min(above + 0.5, end_y))
         else:
             next_top = None
             bottom = content_floor(page)
@@ -919,7 +1281,10 @@ def crop_answers(doc, book, lesson, segments, out_dir, rel_dir, span):
         content_right = max([r.x1 for r in inside], default=column.x1) + 6
         right = min(column.x1, page_right - 6, content_right)
 
-        clip = fitz.Rect(max(column.x0 + 4, number_x - 14), crop_top, right, bottom)
+        # Left edge: a little left of the number itself, wherever that is. Tying
+        # it to the column boundary cut the first digit off two-digit numbers,
+        # which hang further left than "1." to "9." do.
+        clip = fitz.Rect(max(page.rect.x0, number_x - 9), crop_top, right, bottom)
 
         # Only skip genuinely empty slivers. A one-line answer is about 10pt
         # tall, so a higher cutoff silently drops real answers.
@@ -989,6 +1354,7 @@ def crop_answers(doc, book, lesson, segments, out_dir, rel_dir, span):
 def run(book_id, chapter):
     """Extract one chapter ("3"), or every chapter ("all")."""
     book = BOOKS[book_id]
+    use_style(book.get("style", "mhr"))
     doc = fitz.open(ROOT / book["pdf"])
 
     asset_root = ROOT / "assets" / "books" / book_id
@@ -1018,6 +1384,17 @@ def run(book_id, chapter):
             questions = crop_questions(doc, book, lesson, q_dir, f"{rel}/questions")
             answers = crop_answers(doc, book, lesson, segments, a_dir, f"{rel}/answers",
                                    spans.get(lesson_id))
+
+            # Where the page range was partly a guess (see read_lessons_nelson),
+            # keep only the pages that turned out to have questions on them.
+            if STYLE["name"] == "nelson":
+                used = sorted({int(m.group(1))
+                               for images in questions.values() for path in images
+                               for m in [re.search(r'-p(\d+)-q\d+', path)] if m})
+                if used:
+                    last_page = used[-1]
+                else:
+                    last_page = first_page
 
             # full pages, for page mode and the "whole page" button
             pages, missing_pages = [], []
@@ -1078,6 +1455,7 @@ def run(book_id, chapter):
             out = {
                 "book": book_id,
                 "bookTitle": book["title"],
+                "publisher": book.get("publisher", "McGraw-Hill Ryerson"),
                 "chapter": chapter_id,
                 "lesson": lesson_id,
                 "title": title,
@@ -1102,6 +1480,10 @@ def run(book_id, chapter):
                   f"{'  answer-only ' + str(len(orphans)) if orphans else ''}"
                   f"{'  no-answer ' + str(len(unanswered)) if unanswered else ''}"
                   f"{'  MISSING PAGES ' + str(missing_pages) if missing_pages else ''}")
+
+    # Lessons whose pages are missing from this PDF and come from another file.
+    import supplements
+    supplements.apply(book_id, wanted, ROOT, IMAGE_EXT, DPI_CROP, DPI_PAGE)
 
     write_index(data_dir, book_id, book)
     return summary

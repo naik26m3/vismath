@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>Books — VisMath</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="bg-stone-100 text-slate-800 h-dvh flex flex-col">
+
+    <header class="px-6 pt-6 pb-4 w-full max-w-[52rem] mx-auto">
+        <a href="index.html" class="text-sm text-slate-500 hover:text-slate-800">&larr; Back</a>
+        <h1 class="text-2xl font-bold mt-1 text-slate-900">Books</h1>
+        <p class="mt-1 text-slate-500">Choose the textbook.</p>
+    </header>
+
+    <!-- The scrolling box: min-h-0 lets it be shorter than its books,
+         overflow-auto makes it scroll instead of spilling out. -->
+    <main class="flex-1 min-h-0 overflow-auto">
+        <!-- The grid: 2 books per row, 3 from medium width up.
+             Each book is one <a>, so the whole card is the link. -->
+        <div class="w-full max-w-[52rem] mx-auto px-6 pb-8 grid grid-cols-2 md:grid-cols-3 gap-5">
+
+        <a href="answerkey.html?book=mhr-grade-9"
+            class="block rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-sm
+                   hover:shadow-md hover:border-slate-300">
+            <img class="w-full aspect-[4/5] object-cover" src="assets/covers/mhr-grade-9.jpg" alt="">
+            <div class="px-4 py-3">
+                <p class="font-semibold text-slate-900 leading-snug">Principles of Mathematics 9</p>
+                <p class="text-sm text-slate-500 mt-1">McGraw-Hill Ryerson</p>
+            </div>
+        </a>
+
+        <a href="answerkey.html?book=mcgraw-hill-ryerson_principles-of-mathematics-10"
+            class="block rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-sm
+                   hover:shadow-md hover:border-slate-300">
+            <img class="w-full aspect-[4/5] object-cover" src="assets/covers/mcgraw-hill-ryerson_principles-of-mathematics-10.jpg" alt="">
+            <div class="px-4 py-3">
+                <p class="font-semibold text-slate-900 leading-snug">Principles of Mathematics 10</p>
+                <p class="text-sm text-slate-500 mt-1">McGraw-Hill Ryerson</p>
+            </div>
+        </a>
+
+        <a href="answerkey.html?book=nelson_principles-of-mathematics-10"
+            class="block rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-sm
+                   hover:shadow-md hover:border-slate-300">
+            <img class="w-full aspect-[4/5] object-cover" src="assets/covers/nelson_principles-of-mathematics-10.jpg" alt="">
+            <div class="px-4 py-3">
+                <p class="font-semibold text-slate-900 leading-snug">Principles of Mathematics 10</p>
+                <p class="text-sm text-slate-500 mt-1">Nelson</p>
+            </div>
+        </a>
+
+        <a href="answerkey.html?book=nelson_functions-11"
+            class="block rounded-2xl overflow-hidden bg-white border border-slate-200 shadow-sm
+                   hover:shadow-md hover:border-slate-300">
+            <img class="w-full aspect-[4/5] object-cover" src="assets/covers/nelson_functions-11.jpg" alt="">
+            <div class="px-4 py-3">
+                <p class="font-semibold text-slate-900 leading-snug">Functions 11</p>
+                <p class="text-sm text-slate-500 mt-1">Nelson</p>
+            </div>
+        </a>
+
+        </div>
+    </main>
+
+    <!-- JS goes at the end of body, so the HTML above already exists when it runs. -->
+    <!-- <script src="js/answerkey.js"></script> -->
+</body>
+
+</html>

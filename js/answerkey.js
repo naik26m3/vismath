@@ -10,6 +10,11 @@ const answerPageNumber = answer.querySelector('#js-answer-page-number');
 const answerLeftBtn = answer.querySelector('#js-answer-left-btn');
 const answerRightBtn = answer.querySelector('#js-answer-right-btn');
 
+const lessonPicker = document.querySelector('#js-lesson-picker');
+
+const params = new URLSearchParams(location.search);
+const book = params.get('book');
+
 let lesson;
 let questionIndex = 0;
 let answerIndex = 0;
@@ -23,6 +28,37 @@ function updatePage(page, num, img) {
     page.src = img;
 }
 
+
+async function loadIndex() {
+    const response = await fetch(`data/${params.get('book')}/index.json`);
+    const index = await response.json();
+
+    let lessonList = '';
+    let currentChapter = 0;
+    index.lessons.forEach((item) => {
+        if (item.chapter !== currentChapter) {
+            if (currentChapter > 0) {
+                lessonList += `</optgroup>`
+            }
+        
+            lessonList += `<optgroup label="Chapter ${item.chapter}">`
+            currentChapter = item.chapter;
+        }
+
+        lessonList += `<option value="${item.file}">${item.lesson} ${item.title}</option>`
+    })
+    lessonList += `</optgroup>`;
+
+    lessonPicker.innerHTML = lessonList;
+}
+
+lessonPicker.addEventListener('change', (e) => {
+    loadLesson(e.target.value);
+})
+
+loadIndex();
+
+
 async function loadLesson(lessonName) {
     const response = await fetch(lessonName);
     lesson = await response.json();
@@ -33,7 +69,7 @@ async function loadLesson(lessonName) {
     updatePage(answerPage, answerPageNumber, lesson.answerPageImages[0]);
 }
 
-loadLesson("data/mhr-grade-9/2.3.json");
+
 
 questionLeftBtn.addEventListener('click', () => {
     if (questionIndex - 1 >= 0) {
@@ -63,7 +99,7 @@ answerRightBtn.addEventListener('click', () => {
     }
 })
 
-
+loadLesson(`data/${params.get('book')}/1.0.json`);
 
 
 

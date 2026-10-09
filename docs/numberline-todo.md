@@ -1,5 +1,7 @@
 # Number Line — Wishlist
 
+**The open tasks are collected in `docs/todo.md` — work from that one.** This file keeps the history and the reasons.
+
 Tasks for `numberline.html` + `js/numberline.js`.
 
 ---

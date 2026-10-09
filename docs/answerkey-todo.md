@@ -1,5 +1,7 @@
 # Answer Key — Wishlist
 
+**The open tasks are collected in `docs/todo.md` — work from that one.** This file keeps the history and the reasons.
+
 Tasks for `answerkey.html` + `js/answerkey.js`.
 The data it reads is in `data/mhr-grade-9/`, one JSON file per lesson.
 
@@ -16,6 +18,12 @@ The data it reads is in `data/mhr-grade-9/`, one JSON file per lesson.
 - [x] ← → buttons for the answer half, with its own index
 - [x] Listeners at the top level, so loading another lesson will not stack them
 - [x] Both indexes go back to 0 when a lesson loads
+- [x] `loadLesson(path)` takes the lesson's file instead of having it typed in
+- [x] Lesson picker: a dropdown filled from `data/mhr-grade-9/index.json`,
+      built as one string and set once; choosing a lesson loads it
+- [x] The page opens on the lesson the dropdown shows
+- [x] Picker grouped by chapter with `<optgroup>`: remember the current chapter,
+      open a new group when it changes, close the last one after the loop
 
 ---
 
@@ -42,6 +50,22 @@ before you lose the connection and keep the tab open, or the styling will not lo
       Think about WHEN this has to be worked out: after every press, and also when
       a lesson first loads. That points at one function that sets all four buttons.
 
+- [ ] **Safety net: a lesson with no pages.**
+      `lesson.pageImages[0]` assumes the list has at least one page. If a list is
+      empty, `[0]` is `undefined`, `pageNumber(undefined)` throws, and the code
+      stops there - so the answer half never loads either.
+      No lesson in this book is empty any more (8.3 was, until its pages were
+      added), so you will not see it happen today. A second book with a gap
+      would bring it back.
+      Target: when a list is empty, that half shows a short message such as
+      "No pages for this lesson" and the other half still loads.
+      A list tells you how many items it has with `.length`.
+      To test it without a broken lesson: open DevTools, and after a lesson has
+      loaded type `lesson.pageImages = []` in the console, then call whatever
+      shows the first page. Or temporarily make a copy of a lesson file with an
+      empty `pageImages` list and load that.
+      Check both lists: `pageImages` and `answerPageImages`.
+
 - [ ] **Tidy `updatePage(page, num, img)`.** Inside it, `page` is the `<img>`,
       `num` is the title and `img` is a path. Rename them to what they are.
 
@@ -52,10 +76,9 @@ before you lose the connection and keep the tab open, or the styling will not lo
 
 ## Next
 
-- [ ] **Lesson picker.** A dropdown listing the lessons; choosing one loads it.
-      `loadLesson` needs to take the lesson id instead of having `1.2.json`
-      typed in. There are 81 lesson files; think about where the list of them
-      comes from.
+- [ ] **Tidy the picker's labels.** Entries like `1.0 Get Ready` and
+      `1.R Chapter 1 Review` show ids that were made up for the file names, not
+      numbers from the book. Show the number only for real lessons (1.1, 1.2...).
 - [ ] **Bigger buttons.** `h-[2rem]` is small for a finger. The fraction page
       uses `h-11`.
 - [ ] **Questions mode.** One question next to its answer, using `items` in the

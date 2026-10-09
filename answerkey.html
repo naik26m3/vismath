@@ -13,53 +13,72 @@
 
 <body class="bg-stone-100 text-slate-800 h-dvh flex flex-col">
 
-    <header class="px-6 pt-6 pb-4 w-full max-w-[52rem] mx-auto flex justify-between items-center">
-        <div>
-            <a href="index.html" class="text-sm text-slate-500 hover:text-slate-800">&larr; Back</a>
-            <h1 class="text-2xl font-bold mt-1 text-slate-900">Answer Key</h1>
+    <header class="shrink-0 w-full max-w-[80rem] mx-auto px-4 pt-4 pb-3 flex justify-between items-end gap-4">
+        <div class="shrink-0">
+            <a href="books.html" class="text-sm text-slate-500 hover:text-slate-800">&larr; Books</a>
+            <h1 class="text-2xl font-bold mt-1 text-slate-900">Answer key</h1>
         </div>
-        <select name="" id="" class="w-[50%] rounded-lg bg-white border h-[2.5rem] ps-2">
-        <optgroup label="Chapter 1">
+        <select id="js-lesson-picker" aria-label="Lesson"
+            class="min-w-0 w-full max-w-[26rem] h-11 px-3 rounded-xl bg-white border border-slate-300
+                   text-slate-900 shadow-sm">
+        <!-- <optgroup label="Chapter 1">
             <option value="data/mhr-grade-9/1.0.json">Get Ready</option>
             <option value="data/mhr-grade-9/1.1.json">1.1 Focus on Problem Solving</option>
-        </optgroup>
-    </select>
+        </optgroup> -->
+        </select>
     </header>
-    
 
-    <main class="max-w-[52rem] mx-auto  px-6 pb-8 flex-1 min-h-0 flex flex-col gap-5">
-        <div id="js-question"
-            class="border rounded-2xl w-[95%] mx-auto flex-1 flex flex-col bg-white min-h-0 overflow-hidden">
-            <div class="flex justify-between border-b">
-                <p id="js-question-page-number" class=" shrink-0 h-[3rem] flex items-center px-3 text-2xl"></p>
-                <div class="flex justify-center items-center gap-4 me-3">
-                    <button id="js-question-left-btn"
-                        class="bg-indigo-500 hover:bg-indigo-900 w-[3rem] h-[2rem] rounded-lg text-white text-2xl flex items-center justify-center pb-1">←</button>
-                    <button id="js-question-right-btn"
-                        class="bg-indigo-500 hover:bg-indigo-900 w-[3rem] h-[2rem] rounded-lg text-white text-2xl flex items-center justify-center pb-1">→</button>
+    <!-- Tablet upright: question above answer. Tablet on its side: side by side. -->
+    <main class="flex-1 min-h-0 w-full max-w-[80rem] mx-auto px-4 pb-4
+                 flex flex-col landscape:flex-row gap-4">
+
+        <section id="js-question"
+            class="flex-1 min-h-0 min-w-0 flex flex-col overflow-hidden
+                   rounded-2xl bg-white border border-slate-200 shadow-sm">
+            <!-- Title row: stays put while the page below scrolls. -->
+            <div class="shrink-0 flex justify-between items-center gap-3 px-4 py-2 border-b border-slate-200">
+                <div class="flex items-baseline gap-3 min-w-0">
+                    <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Question</h2>
+                    <p id="js-question-page-number" class="text-lg font-semibold text-slate-900"></p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="js-question-left-btn" aria-label="Previous question page"
+                        class="w-12 h-11 rounded-xl border border-slate-300 bg-white text-xl text-slate-700
+                               hover:bg-slate-100 active:bg-slate-200 flex items-center justify-center">&larr;</button>
+                    <button id="js-question-right-btn" aria-label="Next question page"
+                        class="w-12 h-11 rounded-xl border border-slate-300 bg-white text-xl text-slate-700
+                               hover:bg-slate-100 active:bg-slate-200 flex items-center justify-center">&rarr;</button>
                 </div>
             </div>
-            <div class="overflow-auto min-h-0">
-                <img id="js-question-page">
+            <!-- The scrolling box. -->
+            <div class="flex-1 min-h-0 overflow-auto bg-slate-50">
+                <img id="js-question-page" class="block w-full" alt="">
             </div>
-        </div>
+        </section>
 
-        <div id="js-answer"
-            class="border rounded-2xl w-[95%] mx-auto flex-1 flex flex-col bg-white min-h-0 overflow-hidden">
-            <div class="flex justify-between border-b">
-                <p id="js-answer-page-number" class="shrink-0 h-[3rem] flex items-center px-3 text-2xl"></p>
-                <div class="flex justify-center items-center gap-4 me-3">
-                    <button id="js-answer-left-btn"
-                        class="bg-indigo-500 hover:bg-indigo-900 w-[3rem] h-[2rem] rounded-lg text-white text-2xl flex items-center justify-center pb-1">←</button>
-                    <button id="js-answer-right-btn"
-                        class="bg-indigo-500 hover:bg-indigo-900 w-[3rem] h-[2rem] rounded-lg text-white text-2xl flex items-center justify-center pb-1">→</button>
+        <section id="js-answer"
+            class="flex-1 min-h-0 min-w-0 flex flex-col overflow-hidden
+                   rounded-2xl bg-white border border-slate-200 shadow-sm">
+            <!-- Title row: stays put while the page below scrolls. -->
+            <div class="shrink-0 flex justify-between items-center gap-3 px-4 py-2 border-b border-slate-200">
+                <div class="flex items-baseline gap-3 min-w-0">
+                    <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Answer</h2>
+                    <p id="js-answer-page-number" class="text-lg font-semibold text-slate-900"></p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="js-answer-left-btn" aria-label="Previous answer page"
+                        class="w-12 h-11 rounded-xl border border-slate-300 bg-white text-xl text-slate-700
+                               hover:bg-slate-100 active:bg-slate-200 flex items-center justify-center">&larr;</button>
+                    <button id="js-answer-right-btn" aria-label="Next answer page"
+                        class="w-12 h-11 rounded-xl border border-slate-300 bg-white text-xl text-slate-700
+                               hover:bg-slate-100 active:bg-slate-200 flex items-center justify-center">&rarr;</button>
                 </div>
             </div>
-
-            <div class="overflow-auto min-h-0">
-                <img id="js-answer-page">
+            <!-- The scrolling box. -->
+            <div class="flex-1 min-h-0 overflow-auto bg-slate-50">
+                <img id="js-answer-page" class="block w-full" alt="">
             </div>
-        </div>
+        </section>
 
     </main>
 
