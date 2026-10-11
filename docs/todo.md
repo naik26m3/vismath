@@ -263,11 +263,50 @@ These need a decision before code. A plane is a good place to make it.
 
 - [ ] **Try the answer key on the Fire HD**, both orientations.
 - [ ] **Use the fraction tool with a real student once.**
-- [ ] **Decide where the book images go** so the answer key works on the live
-      site. Agreed plan, not started: a second Vercel site holding only `data/`
-      and `assets/books/`, and one base-address constant in `js/answerkey.js`.
-      Until then the live answer key page shows no pictures.
-- [ ] **Test the scanner on a second book** (Claude).
+- [x] DONE 2026-10-09 — **Where the book images go.** They are on Cloudflare
+      Pages: `https://vismath-books.pages.dev`, uploaded from the folder
+      `D:\Study\CS50\Projectsismath-books` (outside the repo). To update it
+      after a re-scan: Claude copies `data/` and `assets/books/` into that
+      folder, then you run, from inside it,
+      `npx wrangler pages deploy . --project-name vismath-books`.
+      Free plan limits: 20,000 files (15,008 used), 25 MB per file.
+- [x] DONE — **Test the scanner on a second book.** Five books scanned now.
+
+### Books: fix later (Claude) — Pages mode comes first
+
+Decided 2026-10-11: whole pages are the priority. Per-question crops wait.
+These only matter for Questions mode.
+
+- [ ] **Cumulative reviews in the three Nelson books** have most answers
+      missing. They are multiple choice and the key prints them as one tight
+      row. Functions 11: 3.C, 6.C, 8.C. Principles 10: 3.C, 6.C, 8.C.
+      Advanced Functions 12: 3.C (q9-31), 6.C (q9-29), 9.C (q10-34).
+- [x] DONE 2026-10-11 — **Advanced Functions 12, single misses** (1.5 q3,
+      7.5 q12, 8.4 q16, 8.2 q10, 7.M q12). They sat on the last line of a
+      column and the scanner took a fraction's digit for the page number.
+- [ ] **Functions 11:** 1.0, 4.6, 5.6, 5.8 miss 1-3 answers; 5.2 has 3
+      answers with no question.
+- [ ] **Principles 10 (Nelson):** 3.0, 3.2 miss answers; 5.0 has 8 answers
+      with no question.
+- [ ] **Grade 9:** eight lessons miss one or two answers.
+- [ ] **McGraw-Hill 10, crops marked wrong in review:** `1.0-p004-q01`,
+      `1.0-p004-q03`, `1.0-p007-q13`, `1.4-p041-q13`, `1.T-p051-q15`.
+- [ ] **Untidy crops** (stray heading, cut figure, part of the next question):
+      about 1 in 10 Nelson question crops. Find them on the review pages,
+      `tools/review/<book id>/index.html`.
+
+### Books: not scanned yet
+
+- [ ] **Mathematics of Data Management (Nelson).** The PDF is photos with poor
+      machine-read text, so question crops would be unreliable. Plan: Pages
+      mode only, matching lessons to answer pages from the key's
+      "1.1 Exercises, page 11" headings.
+- [ ] **Functions 11 (McGraw-Hill Ryerson).** The PDF is photos with no text at
+      all. Needs text recognition first, or a hand-made list of which pages
+      belong to which lesson.
+- [ ] **Covers missing:** Advanced Functions 12
+      (`assets/covers/nelson_advanced-functions-12.jpg`).
+
 - [ ] **Rename the book id** to carry publisher and title, when the second book
       arrives. Today it is `mhr-grade-9`.
 - [ ] **`data/books.json`** and a **book selector page** (`books.html`). The
