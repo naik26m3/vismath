@@ -1,5 +1,10 @@
 # Textbook PDFs. Copyrighted — never push these anywhere public.
+# This also matches assets/books/ (the page images and crops).
 books/
+
+# Lesson JSON made from the books. Like assets/books/, it lives on Cloudflare
+# (vismath-books.pages.dev), not in this repo.
+data/
 
 # OS / editor junk
 .DS_Store

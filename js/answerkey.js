@@ -18,8 +18,14 @@ const params = new URLSearchParams(location.search);
 const book = params.get('book');
 
 let lesson;
+let lessonIndex;
+let isNew = true;
 let questionIndex = 0;
 let answerIndex = 0;
+
+function refineCall(lessonName, lessonIndex) {
+    return `${BOOKS_URL}/${lessonName.slice(0, -10)}/${lessonIndex.lessons[0].lesson}.json`;
+}
 
 function pageNumber(page) {
     return Number(page.slice(-8, -5));
@@ -32,12 +38,12 @@ function updatePage(page, num, img) {
 
 
 async function loadIndex() {
-    const response = await fetch( BOOKS_URL + `/data/${params.get('book')}/index.json`);
-    const index = await response.json();
+    const response = await fetch(`${BOOKS_URL}/data/${params.get('book')}/index.json`);
+    lessonIndex = await response.json();
 
     let lessonList = '';
     let currentChapter = 0;
-    index.lessons.forEach((item) => {
+    lessonIndex.lessons.forEach((item) => {
         if (item.chapter !== currentChapter) {
             if (currentChapter > 0) {
                 lessonList += `</optgroup>`
@@ -52,6 +58,7 @@ async function loadIndex() {
     lessonList += `</optgroup>`;
 
     lessonPicker.innerHTML = lessonList;
+    loadLesson(`data/${params.get('book')}/index.json`, true);
 }
 
 lessonPicker.addEventListener('change', (e) => {
@@ -61,9 +68,19 @@ lessonPicker.addEventListener('change', (e) => {
 loadIndex();
 
 
-async function loadLesson(lessonName) {
-    const response = await fetch(`${BOOKS_URL}/${lessonName}`);
-    lesson = await response.json();
+async function loadLesson(lessonName, isFirst = false) {
+    let response;
+    
+    if (isFirst) {
+        response = await fetch(`${refineCall(lessonName, lessonIndex)}`);
+        lesson = await response.json();
+    } else {
+        response = await fetch(`${BOOKS_URL}/${lessonName}`);
+        lesson = await response.json();
+    }
+    
+    
+    
     questionIndex = 0;
     answerIndex = 0;
 
@@ -101,7 +118,7 @@ answerRightBtn.addEventListener('click', () => {
     }
 })
 
-loadLesson(`data/${params.get('book')}/1.0.json`);
+
 
 
 
