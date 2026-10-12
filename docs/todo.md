@@ -64,6 +64,35 @@ Ordered so the short ones come first. Tick them off as you go.
       lesson first loads. That points at one function that sets all four
       buttons from the two indexes, called from those places.
 
+- [ ] **A4b. The arrows while a pane is hidden.** (15 min)
+      Decided 2026-10-12: when a pane is hidden, its ← → buttons stay on
+      screen but do nothing. Right now they still work: press → while the
+      answer is hidden and the page changes underneath, so Show reveals a
+      different page from the one you hid.
+      Target: while hidden, pressing an arrow changes nothing.
+      Hints: each arrow listener already has an `if` that decides whether to
+      move. "Is this pane hidden?" is one more thing to check there, and you
+      can ask the element: `classList.contains('hidden')`.
+      Goes well with A4: an arrow that will do nothing should look faded, and
+      "hidden" is one more reason for it to be `disabled`.
+
+- [ ] **A4c. "Hidden" message in landscape.** (20 min)
+      In landscape a hidden pane keeps its size (on purpose, so the other
+      page does not jump), but it is an empty grey box. Target: the word
+      "Hidden" in the middle of that box, only while the pane is hidden.
+      Do the Question pane first, then copy to Answer.
+      1. HTML: inside the grey scrolling box, next to the `<img>`, add a small
+         element with the text "Hidden". Give it an id, and the class `hidden`
+         so it starts invisible (the pane opens showing the picture, so the
+         message starts in the opposite state).
+      2. JS: in the Hide click listener, toggle `hidden` on the message too.
+         No `if` needed: picture and message are always opposite, and toggling
+         both keeps them opposite.
+      3. Centre it: a flex parent, centred on both axes. Watch out: it needs
+         height to be centred in, and its parent only has height in landscape.
+      Also still to do from the Hide work: delete the copied
+      `aria-label="Next question page"` from both Hide buttons.
+
 - [ ] **A5. Tidy the picker's labels.** (15 min)
       Entries like `1.0 Get Ready` and `1.R Chapter 1 Review` show ids that were
       made up for file names. Show the number only for real lessons (1.1, 1.2…),
@@ -182,9 +211,35 @@ These need a decision before code. A plane is a good place to make it.
       at. Sketch: where do the question numbers go? How do you switch between
       Pages and Questions?
 
+- [ ] **Book reader: read a whole book in the browser.** (`reader.html`)
+      Decided 2026-10-12. This replaces "Download" and a PDF viewer: the PDFs
+      are 30-66 MB (Cloudflare allows 25 MB a file) and tablets often download
+      a PDF instead of showing it.
+      What it is: the answer key with ONE pane. Pure page images.
+      - one big page, with ← →
+      - a picker to jump to a chapter or lesson (like the answer key's)
+      - a box to type a page number and go straight there
+      - opened as `reader.html?book=<id>`, same as the answer key
+      Who does what:
+      - Claude: save EVERY page of each book as an image (only lesson pages
+        exist now), and write one JSON per book listing the pages in order
+        with where each chapter and lesson starts. Check the file count
+        against Cloudflare's 20,000 limit first (about 15,200 used).
+      - You: build `reader.html` and `js/reader.js`. Most of it you have
+        already written in `js/answerkey.js`: `BOOKS_URL`, reading `?book=`,
+        `updatePage`, the arrow listeners, the picker.
+      Things to decide on paper first:
+      - Does the page number box take the BOOK's page number (what is printed
+        on the page) or the position in the file? The printed one is what a
+        tutor will type. Front pages (contents, i, ii, iii) have no number.
+      - What happens when someone types a page that does not exist?
+      - Should it remember the page in the address (`&page=57`) so a refresh
+        or a shared link opens the same page? You already know the tool.
+
 - [ ] **Books page: a dialog when you tap a book.** (`books.html`)
       Tap a book and a dialog opens with that book's name and two choices:
-      **Open** (go to the answer key for that book) and **Download** (the PDF).
+      **Answer key** (go to `answerkey.html`) and **Read the book** (go to
+      `reader.html`, see the task above). No Download: see why above.
       You already built one of these in `fractions.html`: `<dialog>`,
       `showModal()`, and a `<form method="dialog">` so the buttons close it.
       Things to work out:
@@ -194,14 +249,12 @@ These need a decision before code. A plane is a good place to make it.
       - One dialog for all the books, not one each. So the dialog has to know
         which book was tapped: put the id on the card (`data-book="..."`) and
         read it with `dataset` in the click.
-      - Open is just a link built from that id.
-      - Download cannot work yet: the PDFs are not on the site (see "Book
-        download page" in Part 3). Build the button anyway and leave it
-        disabled until then.
+      - Both choices are just links built from that id.
+      - Until `reader.html` exists, leave "Read the book" disabled.
 
-- [ ] **Answer key: Hide answer.** A toggle that covers the answer half, for
-      when the student can see the screen. Should it stay hidden when you move
-      to the next page?
+- [x] DONE 2026-10-12 — **Answer key: Hide.** A Hide / Show button on both
+      panes. A hidden pane shrinks to its title row and the other one grows.
+      It stays hidden when you change page or lesson.
 
 - [ ] **Number line: stepping mode.** A marker on the line and buttons to move
       it, so a student walks `3 + 5`. Open questions:
@@ -265,11 +318,11 @@ These need a decision before code. A plane is a good place to make it.
 - [ ] **Use the fraction tool with a real student once.**
 - [x] DONE 2026-10-09 — **Where the book images go.** They are on Cloudflare
       Pages: `https://vismath-books.pages.dev`, uploaded from the folder
-      `D:\Study\CS50\Projectsismath-books` (outside the repo). To update it
+      `D:\Study\CS50\Projects\vismath-books` (outside the repo). To update it
       after a re-scan: Claude copies `data/` and `assets/books/` into that
       folder, then you run, from inside it,
       `npx wrangler pages deploy . --project-name vismath-books`.
-      Free plan limits: 20,000 files (15,008 used), 25 MB per file.
+      Free plan limits: 20,000 files (about 15,200 used), 25 MB per file.
 - [x] DONE — **Test the scanner on a second book.** Five books scanned now.
 
 ### Books: fix later (Claude) — Pages mode comes first
@@ -295,27 +348,38 @@ These only matter for Questions mode.
       about 1 in 10 Nelson question crops. Find them on the review pages,
       `tools/review/<book id>/index.html`.
 
-### Books: not scanned yet
+### Books: where each one stands (checked 2026-10-12)
 
-- [ ] **Mathematics of Data Management (Nelson).** The PDF is photos with poor
-      machine-read text, so question crops would be unreliable. Plan: Pages
-      mode only, matching lessons to answer pages from the key's
-      "1.1 Exercises, page 11" headings.
-- [ ] **Functions 11 (McGraw-Hill Ryerson).** The PDF is photos with no text at
-      all. Needs text recognition first, or a hand-made list of which pages
-      belong to which lesson.
-- [ ] **Covers missing:** Advanced Functions 12
-      (`assets/covers/nelson_advanced-functions-12.jpg`).
+All six are uploaded to Cloudflare and have a card and a cover on `books.html`.
+
+| Book | Pages | Question crops |
+|---|---|---|
+| McGraw-Hill Ryerson, Principles of Mathematics 9 | done | done |
+| McGraw-Hill Ryerson, Principles of Mathematics 10 | done | done |
+| Nelson, Principles of Mathematics 10 | done | done |
+| Nelson, Functions 11 | done | done |
+| Nelson, Advanced Functions 12 | done | done |
+| Nelson, Mathematics of Data Management | done, NOT checked | none (PDF is photos) |
+
+- [ ] **Check the pages of Data Management and Advanced Functions 12** on
+      `tools/review/<book id>/pages.html`. Mark what is wrong, press "Copy the
+      wrong ones", paste the list to Claude. You said some looked wrong.
+      To build that page for another book: `python tools/review_pages.py <book id>`.
+- [ ] **Functions 11 (McGraw-Hill Ryerson): not scanned.** The PDF is photos
+      with no text at all. Needs text recognition first, or a hand-made list
+      of which pages belong to which lesson. PDF is in
+      `books/mcgraw-hill-ryerson_functions-11/`.
+- [ ] **Data Management lesson names** come from page footers and may have a
+      spelling slip or two.
 
 - [ ] **Rename the book id** to carry publisher and title, when the second book
       arrives. Today it is `mhr-grade-9`.
-- [ ] **`data/books.json`** and a **book selector page** (`books.html`). The
-      answer key learns which book from its link: `answerkey.html?book=<id>`,
-      read with `URLSearchParams`.
-- [ ] **Book download page.** Listing each book with a link to its PDF. Two
-      questions first: where the PDFs are hosted (`books/` is not on GitHub or
-      Vercel), and whether the centre's licence allows sharing the files. Keep
-      it off the public site unless it does.
+- [x] DONE — **Book selector page** (`books.html`), and the answer key reads
+      the book from its link with `URLSearchParams`.
+- [ ] **`data/books.json`** (optional): one list of the books, so `books.html`
+      builds its cards from data instead of six hand-written cards.
+- [x] DROPPED 2026-10-12 — **Book download page.** Replaced by the book
+      reader (Part 2): page images instead of handing out the PDF files.
 - [ ] **Keep Tailwind in the project** so pages work offline: save the script
       as `js/vendor/tailwind.js` and point each page's script tag at it.
 - [ ] Delete `js/fractions-demo.js` and `docs/answer-key-sample.json`; nothing

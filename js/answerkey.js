@@ -14,6 +14,9 @@ const answerRightBtn = answer.querySelector('#js-answer-right-btn');
 
 const lessonPicker = document.querySelector('#js-lesson-picker');
 
+const questionHideBtn = document.querySelector('#js-question-hide-btn');
+const answerHideBtn = document.querySelector('#js-answer-hide-btn');
+
 const params = new URLSearchParams(location.search);
 const book = params.get('book');
 
@@ -40,6 +43,7 @@ function updatePage(page, num, img) {
 async function loadIndex() {
     const response = await fetch(`${BOOKS_URL}/data/${params.get('book')}/index.json`);
     lessonIndex = await response.json();
+    document.title = `${lessonIndex.shortTitle}`;
 
     let lessonList = '';
     let currentChapter = 0;
@@ -118,9 +122,26 @@ answerRightBtn.addEventListener('click', () => {
     }
 })
 
+questionHideBtn.addEventListener('click', () => {
+    
+    if (questionPage.classList.toggle('hidden')) {
+        questionHideBtn.textContent = "Show";
+    } else {
+        questionHideBtn.textContent = "Hide";
+    }
+    question.classList.toggle('portrait:flex-none');
+    
+})
 
-
-
+answerHideBtn.addEventListener('click', () => {
+    if (answerPage.classList.toggle('hidden')) {
+        answerHideBtn.textContent = "Show";
+    } else {
+        answerHideBtn.textContent = "Hide";
+    }
+    answer.classList.toggle('portrait:flex-none');
+    
+})
 
 
 
