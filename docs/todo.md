@@ -339,8 +339,34 @@ These only matter for Questions mode.
       column and the scanner took a fraction's digit for the page number.
 - [ ] **Functions 11:** 1.0, 4.6, 5.6, 5.8 miss 1-3 answers; 5.2 has 3
       answers with no question.
-- [ ] **Principles 10 (Nelson):** 3.0, 3.2 miss answers; 5.0 has 8 answers
-      with no question.
+- [ ] **Principles 10 (Nelson):** 3.0, 3.2 miss answers. (5.0's eight
+      answers with no question are fixed: the PDF has that answer page twice
+      and it was read twice.)
+- [x] DONE 2026-10-13 — **Wrong answer-page pictures.** You found Advanced
+      Functions 1.4 showing the same picture for 616 and 617. Cause: page
+      pictures were only saved if the file did not exist yet, so pictures
+      from an early, wrong scan were never replaced. 46 in Advanced Functions
+      and 3 in Functions 11 were wrong. All page pictures were rebuilt from
+      scratch; no two are identical now.
+- [x] DONE 2026-10-13 — **Whole lessons, real titles, page numbers.** The
+      Nelson books and Data Management used to show only a lesson's exercise
+      pages; now every book shows the whole lesson (teaching pages and
+      exercises), like Grade 9. Nelson lessons have their real names instead
+      of "Lesson 1.4". Every lesson in `index.json` and in its own file has
+      `bookPages` (the whole lesson, first and last page) and
+      `exercisePages` (where the exercises are).
+- [ ] **Picker shows page numbers (you):** read `bookPages` from
+      `index.json`. Maybe also: open the question pane on the first exercise
+      page, using `exercisePages`.
+- [x] DONE 2026-11-03 — **New book: Nelson Principles of Mathematics 9**
+      (`nelson_principles-of-mathematics-9`). 80 lessons, 1089 questions,
+      all answered. Card added to `books.html`. Its cover is the PDF's title
+      page for now; drop a real cover in with the same name to replace it.
+- [ ] **Nelson Math 9, 6.T:** answers 1 and 2 have no question picture.
+- [ ] **Cloudflare file limit:** the upload folder is at about 19,200 files
+      of the 20,000 allowed. The next book will not fit. Options: drop the
+      single-question crops for books that only need Pages mode, or put
+      each book's pictures in fewer, bigger files.
 - [ ] **Grade 9:** eight lessons miss one or two answers.
 - [ ] **McGraw-Hill 10, crops marked wrong in review:** `1.0-p004-q01`,
       `1.0-p004-q03`, `1.0-p007-q13`, `1.4-p041-q13`, `1.T-p051-q15`.
